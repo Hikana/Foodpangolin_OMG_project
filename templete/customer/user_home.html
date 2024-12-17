@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Listing</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+        .sidebar {
+            width: 200px;
+            background-color: #f8f9fa;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+        .sidebar button {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+        .sidebar button:hover {
+            background-color: #218838;
+        }
+        .content {
+            flex-grow: 1;
+            padding: 20px;
+        }
+        header {
+            background-color: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+        }
+        header input[type="text"] {
+            width: 80%;
+            padding: 10px;
+            font-size: 16px;
+        }
+        .business-list {
+            margin: 20px auto;
+            max-width: 800px;
+        }
+        .business-item {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .business-item h3 {
+            margin: 0;
+            font-size: 18px;
+        }
+        .business-item .buttons {
+            display: flex;
+            gap: 10px;
+        }
+        .business-item button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .business-item button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <button onclick="window.location.href='user_home.html'">Restaurant List</button>
+    <button onclick="receiveAllOrders()">Receive All Orders</button>
+</div>
+
+<div class="content">
+    <header>
+        <input type="text" id="searchBar" placeholder="Search for businesses...">
+    </header>
+
+    <div class="business-list">
+        <div class="business-item">
+            <h3>Business Name 1</h3>
+            <div class="buttons">
+                <button onclick="location.href='menu.html'">View Menu</button>
+            </div>
+        </div>
+        <div class="business-item">
+            <h3>Business Name 2</h3>
+            <div class="buttons">
+                <button onclick="location.href='menu.html'">View Menu</button>
+            </div>
+        </div>
+        <div class="business-item">
+            <h3>Business Name 3</h3>
+            <div class="buttons">
+                <button onclick="location.href='menu.html'">View Menu</button>
+            </div>
+        </div>
+        <!-- Add more business items as needed -->
+    </div>
+</div>
+
+<script>
+    function receiveAllOrders() {
+        window.location.href = 'orderlist.html';
+    }
+</script>
+
+</body>
+</html>
