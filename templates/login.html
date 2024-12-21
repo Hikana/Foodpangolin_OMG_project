@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    {% include "models/bs_css.html" %}
+  </head>
+  <body>
+    <div class="container p-5">
+      <div class="row">
+        <h1 class="text-center">
+          Login
+        </h1>
+      </div>
+      <div class="row">
+        <div class="col-4 m-auto  border border-5 border-danger p-5">
+
+          <form>
+            <div class="mb-3">
+              <label for="username" class="form-label">username</label>
+              <input type="username" class="form-control" id="username" name="username">
+            </div>
+            <div class="mb-3">
+              <label for="password"
+                class="form-label">Password</label>
+              <input type="password" class="form-control" id="password" name="password">
+            </div>
+            <button type="button" onclick="submitForm()" class="btn btn-primary">Submit</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    {% include "models/bs_js.html" %}
+    <script src="/static/javascripts/login.js"></script>
+  </body>
+</html>
