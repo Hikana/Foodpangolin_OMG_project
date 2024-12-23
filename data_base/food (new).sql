@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主機： 127.0.0.1
--- 產生時間： 2024-12-21 19:04:51
+-- 產生時間： 2024-12-23 10:39:44
 -- 伺服器版本： 10.4.32-MariaDB
 -- PHP 版本： 8.2.12
 
@@ -53,15 +53,18 @@ CREATE TABLE `customer_order` (
   `customer_id` int(11) NOT NULL,
   `store_id` int(11) NOT NULL,
   `delivery_id` int(11) NOT NULL,
-  `dsetination` text NOT NULL
+  `destination` text NOT NULL,
+  `status` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- 傾印資料表的資料 `customer_order`
 --
 
-INSERT INTO `customer_order` (`id`, `customer_id`, `store_id`, `delivery_id`, `dsetination`) VALUES
-(1, 1, 1, -1, 'fjdifhoiuhj cdce');
+INSERT INTO `customer_order` (`id`, `customer_id`, `store_id`, `delivery_id`, `destination`, `status`) VALUES
+(1, 1, 1, -1, 'fjdifhoiuhj cdce', 0),
+(2, 1, 1, -1, 'MOLi', 0),
+(3, 1, 1, -1, 'MOLi', 0);
 
 -- --------------------------------------------------------
 
@@ -88,6 +91,13 @@ CREATE TABLE `delivery` (
   `license_plate` varchar(8) NOT NULL,
   `contact` varchar(30) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- 傾印資料表的資料 `delivery`
+--
+
+INSERT INTO `delivery` (`id`, `uid`, `name`, `license_plate`, `contact`) VALUES
+(1, 2, 'ccc_dlv', 'ABC-123', '09123456789');
 
 -- --------------------------------------------------------
 
@@ -129,6 +139,7 @@ INSERT INTO `role` (`id`, `name`) VALUES
 
 CREATE TABLE `store` (
   `id` int(11) NOT NULL,
+  `uid` int(11) NOT NULL,
   `name` varchar(30) NOT NULL,
   `location` text NOT NULL,
   `intro` text NOT NULL,
@@ -139,8 +150,8 @@ CREATE TABLE `store` (
 -- 傾印資料表的資料 `store`
 --
 
-INSERT INTO `store` (`id`, `name`, `location`, `intro`, `contact`) VALUES
-(1, '全家', '南投縣埔里鎮大學路 XX 號', '24 小時', '09123456789');
+INSERT INTO `store` (`id`, `uid`, `name`, `location`, `intro`, `contact`) VALUES
+(1, 3, '全家', '南投縣埔里鎮大學路 XX 號', '24 小時', '09123456789');
 
 -- --------------------------------------------------------
 
@@ -182,19 +193,9 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`id`, `username`, `password`, `role`) VALUES
-(1, 'srj_cus', '123456', 2);
-
--- --------------------------------------------------------
-
---
--- 資料表結構 `user_store`
---
-
-CREATE TABLE `user_store` (
-  `id` int(11) NOT NULL,
-  `uid` int(11) NOT NULL,
-  `sid` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+(1, 'srj_cus', '123456', 2),
+(2, 'ccc_dlv', '123', 3),
+(3, 'aa_str', '111', 1);
 
 --
 -- 已傾印資料表的索引
@@ -255,12 +256,6 @@ ALTER TABLE `user`
   ADD PRIMARY KEY (`id`);
 
 --
--- 資料表索引 `user_store`
---
-ALTER TABLE `user_store`
-  ADD PRIMARY KEY (`id`);
-
---
 -- 在傾印的資料表使用自動遞增(AUTO_INCREMENT)
 --
 
@@ -274,7 +269,7 @@ ALTER TABLE `customer`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `customer_order`
 --
 ALTER TABLE `customer_order`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `customer_order_history`
@@ -286,7 +281,7 @@ ALTER TABLE `customer_order_history`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `delivery`
 --
 ALTER TABLE `delivery`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `order_menu`
@@ -316,13 +311,7 @@ ALTER TABLE `store_menu`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
---
--- 使用資料表自動遞增(AUTO_INCREMENT) `user_store`
---
-ALTER TABLE `user_store`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

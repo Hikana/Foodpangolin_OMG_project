@@ -1,20 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {% include "models/bs_css.html" %}
     <title>Document</title>
-</head>
-<body>
+  </head>
+  <body>
     {% include "models/navbar.html" %}
     <div class="container">
-        <div class="row">
-            <h1 class="text-center">This 點餐外送平台 for delivery</h1>
-        </div>
+      <div class="row">
+        <h1 class="text-center">This 點餐外送平台 for delivery</h1>
+      </div>
 
+      <!-- 顯示可接訂單的列表 -->
+      <div class="row">
+        <div class="col-6 m-auto">
+          <div class="order-list row">
+
+          </div>
+
+        </div>
+      </div>
     </div>
-    
+
     {% include "models/bs_js.html" %}
-</body>
+    <script src="/static/javascripts/delivery.js"></script>
+  </body>
 </html>
