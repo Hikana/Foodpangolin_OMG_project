@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>訂單歷史</title>
+</head>
+<body>
+    {% include "models/navbar.html" %}
+    <header>
+        <h1>訂單歷史</h1>
+    </header>
+
+    <main>
+        <section id="order-history">
+            <table border="1">
+                <tr>
+                    <th>時間</th>
+                    <th>菜名</th>
+                    <th>訂購者</th>
+                    <th>送貨小哥</th>
+                </tr>
+                <!-- 範例 -->
+                <tr>
+                    <td>2024-12-03 14:00</td>
+                    <td>麻婆豆腐</td>
+                    <td>張三</td>
+                    <td>王五</td>
+                </tr>
+                <tr>
+                    <td>2024-12-03 15:00</td>
+                    <td>回鍋肉</td>
+                    <td>李四</td>
+                    <td>陳六</td>
+                </tr>
+            </table>
+        </section>
+
+        <section id="navigation">
+            <button onclick="window.location.href='orders.html'">回到訂單管理</button>
+            <button onclick="window.location.href='index.html'">回到首頁</button>
+        </section>
+    </main>
+</body>
+</html>

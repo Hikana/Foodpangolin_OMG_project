@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商家菜單管理</title>
+</head>
+<body>
+    {% include "models/navbar.html" %}
+    <header>
+        <h1>餐廳名稱</h1>
+        <p>地點：這裡是商家的地點。</p>
+        <p>簡介：這裡是商家的描述。</p>
+        <p>練絡方式：這裡是商家的聯絡方式。</p>
+    </header>
+
+    <main>
+        <section id="menu">
+            <h2>菜單</h2>
+            <table border="1">
+                <tr>
+                    <th>菜名</th>
+                    <th>價格</th>
+                    <th>簡介</th>
+                    <th>狀態</th>
+                    <th>操作</th>
+                </tr>
+                <!-- 範例 -->
+                <tr>
+                    <td>麻婆豆腐</td>
+                    <td>$150</td>
+                    <td>正宗四川風味</td>
+                    <td>供應中</td>
+                    <td><button>售完</button></td>
+                </tr>
+            </table>
+        </section>
+
+        <section id="actions">
+            <button onclick="window.location.href='add_dish.html'">新增菜色</button>
+            <button onclick="window.location.href='orders.html'">所有訂單</button>
+        </section>
+    </main>
+</body>
+</html>
