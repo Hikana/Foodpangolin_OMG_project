@@ -96,7 +96,7 @@
 </header>
 
 <div class="order-status">
-    Order Status: Pending
+    Order Status: {{ order.status }}
 </div>
 
 <div class="order-list">
@@ -109,12 +109,18 @@
             </tr>
         </thead>
         <tbody>
-            <!-- Order rows will be dynamically inserted here -->
+            {% for item in order.items %}
+            <tr>
+                <td>{{ item.name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>${{ item.price }}</td>
+            </tr>
+            {% endfor %}
         </tbody>
         <tfoot>
             <tr class="total-row">
                 <td colspan="2">Total</td>
-                <td id="totalPrice">$0</td>
+                <td>${{ order.total_price }}</td>
             </tr>
         </tfoot>
     </table>
@@ -123,11 +129,11 @@
 <div class="user-info">
     <div>
         <label>Orderer Name: </label>
-        <span id="ordererName">John Doe</span>
+        <span id="ordererName">{{ order.customer_name }}</span>
     </div>
     <div>
         <label>Address: </label>
-        <span id="ordererAddress">123 Main Street</span>
+        <span id="ordererAddress">{{ order.delivery_address }}</span>
     </div>
 </div>
 
@@ -137,50 +143,29 @@
 </div>
 
 <script>
-    const orders = [
-        { name: 'Dish 1', price: 10, quantity: 2 },
-        { name: 'Dish 3', price: 15, quantity: 1 }
-    ];
-
-    function displayOrders() {
-        const orderTable = document.querySelector('#orderTable tbody');
-        const totalPriceElement = document.getElementById('totalPrice');
-        let total = 0;
-        orderTable.innerHTML = '';
-
-        orders.forEach(order => {
-            if (order.quantity > 0) {
-                const row = document.createElement('tr');
-
-                const itemName = document.createElement('td');
-                itemName.textContent = order.name;
-
-                const itemQuantity = document.createElement('td');
-                itemQuantity.textContent = order.quantity;
-
-                const itemPrice = document.createElement('td');
-                const itemTotal = order.price * order.quantity;
-                itemPrice.textContent = `$${itemTotal}`;
-                total += itemTotal;
-
-                row.appendChild(itemName);
-                row.appendChild(itemQuantity);
-                row.appendChild(itemPrice);
-                orderTable.appendChild(row);
-            }
-        });
-        totalPriceElement.textContent = `$${total}`;
-    }
-
     function goBack() {
         window.location.href = 'orderlist.html';
     }
 
     function completeOrder() {
-        window.location.href = 'comment.html';
+        fetch('/complete_order', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                order_id: {{ order.id }}
+            }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert('Order Completed!');
+            window.location.href = 'comment.html';
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
     }
-
-    displayOrders();
 </script>
 
 </body>

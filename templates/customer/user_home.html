@@ -3,123 +3,123 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Business Listing</title>
+    <title>Comment</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            display: flex;
+            background-color: #f9f9f9;
         }
-        .sidebar {
-            width: 200px;
+        header {
             background-color: #f8f9fa;
             padding: 20px;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
         }
-        .sidebar button {
+        .review-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .review-item {
+            margin-bottom: 15px;
+        }
+        .review-item label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .review-item input, .review-item textarea, .review-item select {
             width: 100%;
             padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        .review-item textarea {
+            resize: vertical;
+            height: 120px;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .footer button {
+            padding: 10px 20px;
             font-size: 16px;
             background-color: #28a745;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            margin-bottom: 10px;
         }
-        .sidebar button:hover {
+        .footer button:hover {
             background-color: #218838;
-        }
-        .content {
-            flex-grow: 1;
-            padding: 20px;
-        }
-        header {
-            background-color: #f8f9fa;
-            padding: 20px;
-            text-align: center;
-        }
-        header input[type="text"] {
-            width: 80%;
-            padding: 10px;
-            font-size: 16px;
-        }
-        .business-list {
-            margin: 20px auto;
-            max-width: 800px;
-        }
-        .business-item {
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            padding: 15px;
-            margin-bottom: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: #fff;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        .business-item h3 {
-            margin: 0;
-            font-size: 18px;
-        }
-        .business-item .buttons {
-            display: flex;
-            gap: 10px;
-        }
-        .business-item button {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 3px;
-            padding: 10px 15px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-        .business-item button:hover {
-            background-color: #0056b3;
         }
     </style>
 </head>
 <body>
 {% include "models/navbar.html" %}
-<div class="sidebar">
-    <button onclick="window.location.href='user_home.html'">Restaurant List</button>
-    <button onclick="receiveAllOrders()">Receive All Orders</button>
-</div>
+<header>Order Review</header>
 
-<div class="content">
-    <header>
-        <input type="text" id="searchBar" placeholder="Search for businesses...">
-    </header>
-
-    <div class="business-list">
-        <div class="business-item">
-            <h3>Business Name 1</h3>
-            <div class="buttons">
-                <button onclick="location.href='menu.html'">View Menu</button>
-            </div>
-        </div>
-        <div class="business-item">
-            <h3>Business Name 2</h3>
-            <div class="buttons">
-                <button onclick="location.href='menu.html'">View Menu</button>
-            </div>
-        </div>
-        <div class="business-item">
-            <h3>Business Name 3</h3>
-            <div class="buttons">
-                <button onclick="location.href='menu.html'">View Menu</button>
-            </div>
-        </div>
-        <!-- Add more business items as needed -->
+<div class="review-container">
+    <div class="review-item">
+        <label for="orderId">Order Number:</label>
+        <input type="text" id="orderId" value="{{ order.id }}" readonly>
+    </div>
+    <div class="review-item">
+        <label for="orderTime">Time:</label>
+        <input type="text" id="orderTime" value="{{ order.created_at }}" readonly>
+    </div>
+    <div class="review-item">
+        <label for="rating">Rating (1-5):</label>
+        <select id="rating">
+            {% for i in range(1, 6) %}
+            <option value="{{ i }}" {% if feedback and feedback.rating == i %}selected{% endif %}>{{ i }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="review-item">
+        <label for="comment">Comment:</label>
+        <textarea id="comment" placeholder="Enter your review here...">{{ feedback.feedback_text if feedback else '' }}</textarea>
     </div>
 </div>
 
+<div class="footer">
+    <button onclick="submitReview()">Submit</button>
+</div>
+
 <script>
-    function receiveAllOrders() {
-        window.location.href = 'orderlist.html';
+    function submitReview() {
+        const rating = document.getElementById('rating').value;
+        const comment = document.getElementById('comment').value;
+
+        fetch('/submit_feedback', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                order_id: {{ order.id }},
+                rating: rating,
+                comment: comment
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert('Review Submitted!');
+            window.location.href = 'user_home.html';
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
     }
 </script>
 

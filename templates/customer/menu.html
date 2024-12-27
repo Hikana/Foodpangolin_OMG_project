@@ -99,76 +99,23 @@
 </header>
 
 <div class="business-image">
-    <img src="business-image.jpg" alt="Business Image">
+    <img src="{{ business.image_url }}" alt="{{ business.name }}">
 </div>
 
 <div class="menu-list">
+    {% for item in menu_items %}
     <div class="menu-item">
-        <img src="dish1.jpg" alt="Dish 1">
+        <img src="{{ item.image_url }}" alt="{{ item.name }}">
         <div class="details">
-            <span>$10</span>
+            <span>${{ item.price }}</span>
             <div class="quantity-control">
-                <button onclick="decreaseQuantity(1)">-</button>
-                <input type="text" id="quantity1" value="0" readonly>
-                <button onclick="increaseQuantity(1)">+</button>
+                <button onclick="decreaseQuantity({{ item.id }})">-</button>
+                <input type="text" id="quantity{{ item.id }}" value="0" readonly>
+                <button onclick="increaseQuantity({{ item.id }})">+</button>
             </div>
         </div>
     </div>
-    <div class="menu-item">
-        <img src="dish2.jpg" alt="Dish 2">
-        <div class="details">
-            <span>$12</span>
-            <div class="quantity-control">
-                <button onclick="decreaseQuantity(2)">-</button>
-                <input type="text" id="quantity2" value="0" readonly>
-                <button onclick="increaseQuantity(2)">+</button>
-            </div>
-        </div>
-    </div>
-    <div class="menu-item">
-        <img src="dish3.jpg" alt="Dish 3">
-        <div class="details">
-            <span>$15</span>
-            <div class="quantity-control">
-                <button onclick="decreaseQuantity(3)">-</button>
-                <input type="text" id="quantity3" value="0" readonly>
-                <button onclick="increaseQuantity(3)">+</button>
-            </div>
-        </div>
-    </div>
-    <div class="menu-item">
-        <img src="dish4.jpg" alt="Dish 4">
-        <div class="details">
-            <span>$18</span>
-            <div class="quantity-control">
-                <button onclick="decreaseQuantity(4)">-</button>
-                <input type="text" id="quantity4" value="0" readonly>
-                <button onclick="increaseQuantity(4)">+</button>
-            </div>
-        </div>
-    </div>
-    <div class="menu-item">
-        <img src="dish5.jpg" alt="Dish 5">
-        <div class="details">
-            <span>$20</span>
-            <div class="quantity-control">
-                <button onclick="decreaseQuantity(5)">-</button>
-                <input type="text" id="quantity5" value="0" readonly>
-                <button onclick="increaseQuantity(5)">+</button>
-            </div>
-        </div>
-    </div>
-    <div class="menu-item">
-        <img src="dish6.jpg" alt="Dish 6">
-        <div class="details">
-            <span>$25</span>
-            <div class="quantity-control">
-                <button onclick="decreaseQuantity(6)">-</button>
-                <input type="text" id="quantity6" value="0" readonly>
-                <button onclick="increaseQuantity(6)">+</button>
-            </div>
-        </div>
-    </div>
+    {% endfor %}
 </div>
 
 <div class="footer">
@@ -196,7 +143,31 @@
     }
 
     function viewDetails() {
-        window.location.href = 'order_confirm.html';
+        const selectedItems = [];
+        document.querySelectorAll('.menu-item').forEach(item => {
+            const itemId = item.querySelector('button').getAttribute('onclick').match(/\d+/)[0];
+            const quantity = parseInt(document.getElementById('quantity' + itemId).value);
+            if (quantity > 0) {
+                selectedItems.push({
+                    id: itemId,
+                    quantity: quantity
+                });
+            }
+        });
+        if (selectedItems.length > 0) {
+            fetch('/order_confirm', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(selectedItems)
+            })
+            .then(() => {
+                window.location.href = 'order_confirm.html';
+            });
+        } else {
+            alert('Please select at least one item.');
+        }
     }
 </script>
 

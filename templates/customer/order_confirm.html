@@ -104,12 +104,18 @@
             </tr>
         </thead>
         <tbody>
-            <!-- Order rows will be dynamically inserted here -->
+            {% for item in order.items %}
+            <tr>
+                <td>{{ item.name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>${{ item.price }}</td>
+            </tr>
+            {% endfor %}
         </tbody>
         <tfoot>
             <tr class="total-row">
                 <td colspan="2">Total</td>
-                <td id="totalPrice">$0</td>
+                <td>${{ order.total_price }}</td>
             </tr>
         </tfoot>
     </table>
@@ -118,17 +124,17 @@
 <div class="user-info">
     <div>
         <label for="userName">Orderer Name:</label>
-        <input type="text" id="userName" placeholder="Enter your name">
+        <input type="text" id="userName" value="{{ order.customer_name }}" readonly>
     </div>
     <div>
         <label for="userAddress">Address:</label>
-        <input type="text" id="userAddress" placeholder="Enter your address">
+        <input type="text" id="userAddress" value="{{ order.delivery_address }}" readonly>
     </div>
     <div>
         <label for="paymentMethod">Payment Method:</label>
-        <select id="paymentMethod">
-            <option value="cash">Cash</option>
-            <option value="online">Online Payment</option>
+        <select id="paymentMethod" disabled>
+            <option value="cash" {% if order.payment_method == 'cash' %}selected{% endif %}>Cash</option>
+            <option value="online" {% if order.payment_method == 'online' %}selected{% endif %}>Online Payment</option>
         </select>
     </div>
 </div>
@@ -139,60 +145,29 @@
 </div>
 
 <script>
-    const orders = [
-        { name: 'Dish 1', price: 10, quantity: 2 },
-        { name: 'Dish 3', price: 15, quantity: 1 },
-        // Add more orders dynamically based on menu.html
-    ];
-
-    function displayOrders() {
-        const orderTable = document.querySelector('#orderTable tbody');
-        const totalPriceElement = document.getElementById('totalPrice');
-        let total = 0;
-        orderTable.innerHTML = '';
-
-        orders.forEach(order => {
-            if (order.quantity > 0) {
-                const row = document.createElement('tr');
-
-                const itemName = document.createElement('td');
-                itemName.textContent = order.name;
-
-                const itemQuantity = document.createElement('td');
-                itemQuantity.textContent = order.quantity;
-
-                const itemPrice = document.createElement('td');
-                const itemTotal = order.price * order.quantity;
-                itemPrice.textContent = `$${itemTotal}`;
-                total += itemTotal;
-
-                row.appendChild(itemName);
-                row.appendChild(itemQuantity);
-                row.appendChild(itemPrice);
-                orderTable.appendChild(row);
-            }
-        });
-        totalPriceElement.textContent = `$${total}`;
-    }
-
     function goBack() {
         window.location.href = 'menu.html';
     }
 
     function confirmOrder() {
-        const name = document.getElementById('userName').value;
-        const address = document.getElementById('userAddress').value;
-        const paymentMethod = document.getElementById('paymentMethod').value;
-        
-        if (name && address) {
-            alert(`Order Confirmed!\nName: ${name}\nAddress: ${address}\nPayment Method: ${paymentMethod}`);
+        fetch('/confirm_order', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                order_id: {{ order.id }}
+            }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert('Order Confirmed!');
             window.location.href = 'user_home.html';
-        } else {
-            alert('Please enter your name and address.');
-        }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
     }
-
-    displayOrders();
 </script>
 
 </body>

@@ -73,7 +73,15 @@
     <header>Order List</header>
 
     <div class="order-list" id="orderList">
-        <!-- Orders will be dynamically populated here -->
+        {% for order in orders %}
+        <div class="order-item">
+            <div class="details">
+                <span><strong>Time:</strong> {{ order.created_at }}</span>
+                <span><strong>Restaurant:</strong> {{ order.merchant_name }}</span>
+            </div>
+            <button onclick="viewDetails({{ order.id }})">View Details</button>
+        </div>
+        {% endfor %}
     </div>
 
     <div class="footer">
@@ -81,42 +89,13 @@
     </div>
 
     <script>
-        const orders = [
-            { time: '10:30 AM', restaurant: 'Restaurant 1', id: 1 },
-            { time: '11:00 AM', restaurant: 'Restaurant 2', id: 2 },
-            { time: '12:15 PM', restaurant: 'Restaurant 3', id: 3 }
-        ];
-
-        function displayOrders() {
-            const orderList = document.getElementById('orderList');
-            orderList.innerHTML = '';
-
-            orders.forEach(order => {
-                const orderItem = document.createElement('div');
-                orderItem.className = 'order-item';
-
-                const details = document.createElement('div');
-                details.className = 'details';
-                details.innerHTML = `<span><strong>Time:</strong> ${order.time}</span>
-                                     <span><strong>Restaurant:</strong> ${order.restaurant}</span>`;
-
-                const viewButton = document.createElement('button');
-                viewButton.textContent = 'View Details';
-                viewButton.onclick = () => {
-                    window.location.href = `orderdetail.html?orderId=${order.id}`;
-                };
-
-                orderItem.appendChild(details);
-                orderItem.appendChild(viewButton);
-                orderList.appendChild(orderItem);
-            });
+        function viewDetails(orderId) {
+            window.location.href = `orderdetail.html?orderId=${orderId}`;
         }
 
         function goHome() {
             window.location.href = 'user_home.html';
         }
-
-        displayOrders();
     </script>
 </body>
 </html>
