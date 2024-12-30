@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新增菜色</title>
+</head>
+<body>
+    {% include "models/navbar.html" %}
+    <header>
+        <h1>新增菜色</h1>
+    </header>
+
+    <main>
+        <form id="add-dish-form">
+            <label for="dish-name">菜名：</label>
+            <input type="text" id="dish-name" name="dish_name" required><br><br>
+
+            <label for="dish-price">價格：</label>
+            <input type="number" id="dish-price" name="dish_price" required><br><br>
+
+            <label for="dish-description">簡介：</label>
+            <textarea id="dish-description" name="dish_description" rows="4" required></textarea><br><br>
+
+            <button type="submit">繼續新增</button><br><br>
+
+            <button type="button" onclick="window.location.href='index.html'">回首頁</button>
+        </form>
+    </main>
+</body>
+</html>

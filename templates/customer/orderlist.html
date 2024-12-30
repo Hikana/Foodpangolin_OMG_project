@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            font-size: 24px;
+        }
+        .order-list {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 10px;
+        }
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .order-item .details {
+            display: flex;
+            flex-direction: column;
+        }
+        .order-item .details span {
+            font-size: 16px;
+        }
+        .order-item button {
+            padding: 8px 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .order-item button:hover {
+            background-color: #0056b3;
+        }
+        .footer {
+            text-align: center;
+            margin: 20px;
+        }
+        .footer button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .footer button:hover {
+            background-color: #5a6268;
+        }
+    </style>
+</head>
+<body>
+{% include "models/navbar.html" %}
+    <header>Order List</header>
+
+    <div class="order-list" id="orderList">
+        {% for order in orders %}
+        <div class="order-item">
+            <div class="details">
+                <span><strong>Time:</strong> {{ order.created_at }}</span>
+                <span><strong>Restaurant:</strong> {{ order.merchant_name }}</span>
+            </div>
+            <button onclick="viewDetails({{ order.id }})">View Details</button>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="footer">
+        <button onclick="goHome()">Back to Home</button>
+    </div>
+
+    <script>
+        function viewDetails(orderId) {
+            window.location.href = `orderdetail.html?orderId=${orderId}`;
+        }
+
+        function goHome() {
+            window.location.href = 'user_home.html';
+        }
+    </script>
+</body>
+</html>

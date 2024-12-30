@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+        }
+        .order-status {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #fff;
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .order-list {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+        table th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+        table .total-row td {
+            font-weight: bold;
+        }
+        .user-info {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .user-info div {
+            margin-bottom: 10px;
+        }
+        .user-info label {
+            font-weight: bold;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .footer button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .footer .back-button {
+            background-color: #6c757d;
+            color: white;
+        }
+        .footer .complete-button {
+            background-color: #28a745;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+{% include "models/navbar.html" %}
+<header>
+    <h1>Order Details</h1>
+</header>
+
+<div class="order-status">
+    Order Status: {{ order.status }}
+</div>
+
+<div class="order-list">
+    <table id="orderTable">
+        <thead>
+            <tr>
+                <th>Item</th>
+                <th>Quantity</th>
+                <th>Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in order.items %}
+            <tr>
+                <td>{{ item.name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>${{ item.price }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr class="total-row">
+                <td colspan="2">Total</td>
+                <td>${{ order.total_price }}</td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
+<div class="user-info">
+    <div>
+        <label>Orderer Name: </label>
+        <span id="ordererName">{{ order.customer_name }}</span>
+    </div>
+    <div>
+        <label>Address: </label>
+        <span id="ordererAddress">{{ order.delivery_address }}</span>
+    </div>
+</div>
+
+<div class="footer">
+    <button class="back-button" onclick="goBack()">Back to Order List</button>
+    <button class="complete-button" onclick="completeOrder()">Complete Order</button>
+</div>
+
+<script>
+    function goBack() {
+        window.location.href = 'orderlist.html';
+    }
+
+    function completeOrder() {
+        fetch('/complete_order', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                order_id: {{ order.id }}
+            }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert('Order Completed!');
+            window.location.href = 'comment.html';
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+</script>
+
+</body>
+</html>

@@ -1,10 +1,18 @@
 from functools import wraps
 from flask import Flask, redirect, render_template, request, session
 import dbUtils
+from flask import Flask, redirect, render_template, request, session
+import dbUtils
 
+app = Flask(__name__)
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '123TyU%^&'
 
+url_role_map = {
+    1: "/store",
+    2: "/customer",
+    3: "/delivery",
+}
 url_role_map = {
     1: "/store",
     2: "/customer",
@@ -17,11 +25,27 @@ def login_required(f):
 
         if not session.get('loginID'):
             return redirect('/login')
+            return redirect('/login')
         return f(*args, **kwargs)
+
 
     return wrapper
 
 
+def role_check(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+
+        if not request.path.startswith(url_role_map[session.get('role')]) :
+            return redirect('/login')
+        
+        return f(*args, **kwargs)
+
+    return wrapper
+
+# 預設情況下，Flask 會使用 "./static" 資料夾作為靜態資源
+# page
+@app.route('/')
 def role_check(f):
     @wraps(f)
     def wrapper(*args, **kwargs):

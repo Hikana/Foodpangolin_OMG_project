@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>訂單管理</title>
+</head>
+<body>
+    {% include "models/navbar.html" %}
+    <header>
+        <h1>當前訂單</h1>
+    </header>
+
+    <main>
+        <section id="current-orders">
+            <table border="1">
+                <!-- 每筆訂單 -->
+                <tr>
+                    <td>麻婆豆腐</td>
+                    <td>$150</td>
+                    <td>訂購者：張三</td>
+                    <td><button>確認訂單</button></td>
+                </tr>
+                <tr>
+                    <td colspan="4">--------------------------</td> <!-- 分隔線 -->
+                </tr>
+                <tr>
+                    <td>回鍋肉</td>
+                    <td>$180</td>
+                    <td>訂購者：李四</td>
+                    <td><button>確認訂單</button></td>
+                </tr>
+            </table>
+        </section>
+
+        <section id="navigation">
+            <button onclick="window.location.href='order_history.html'">訂單歷史</button>
+            <button onclick="window.location.href='index.html'">回到首頁</button>
+        </section>
+    </main>
+</body>
+</html>

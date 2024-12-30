@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Review</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+        header {
+            background-color: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .review-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .review-item {
+            margin-bottom: 15px;
+        }
+        .review-item label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .review-item input, .review-item textarea, .review-item select {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        .review-item textarea {
+            resize: vertical;
+            height: 120px;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .footer button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .footer button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+{% include "models/navbar.html" %}
+<header>Order Review</header>
+
+<div class="review-container">
+    <div class="review-item">
+        <label for="orderId">Order Number:</label>
+        <input type="text" id="orderId" value="{{ order.id }}" readonly>
+    </div>
+    <div class="review-item">
+        <label for="orderTime">Time:</label>
+        <input type="text" id="orderTime" value="{{ order.created_at }}" readonly>
+    </div>
+    <div class="review-item">
+        <label for="rating">Rating (1-5):</label>
+        <select id="rating">
+            {% for i in range(1, 6) %}
+            <option value="{{ i }}" {% if feedback and feedback.rating == i %}selected{% endif %}>{{ i }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="review-item">
+        <label for="comment">Comment:</label>
+        <textarea id="comment" placeholder="Enter your review here...">{{ feedback.feedback_text if feedback else '' }}</textarea>
+    </div>
+</div>
+
+<div class="footer">
+    <button onclick="completeReview()">Complete</button>
+</div>
+
+<script>
+    function completeReview() {
+        const rating = document.getElementById('rating').value;
+        const comment = document.getElementById('comment').value;
+        fetch('/submit_review', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                order_id: {{ order.id }},
+                rating: rating,
+                comment: comment
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert('Review Submitted!');
+            window.location.href = 'user_home.html';
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,40 @@
+comment.html:
+  - order.id
+  - order.created_at
+  - feedback.rating
+  - feedback.feedback_text
+
+menu.html:
+  - business.image_url
+  - business.name
+  - menu_items.name
+  - menu_items.price
+  - menu_items.image_url
+  - menu_items.id
+
+order_confirm.html:
+  - order.id
+  - order.items (name, quantity, price)
+  - order.total_price
+  - customer.name
+  - customer.address
+  - order.payment_method
+
+orderdetail.html:
+  - order.id
+  - order.status
+  - order.items (name, quantity, price)
+  - order.total_price
+  - customer.name
+  - customer.address
+
+orderlist.html:
+  - order.created_at
+  - merchant.name
+  - order.id
+
+user_home.html:
+  - merchant.name
+  - merchant.id
+  - merchant.contact_info (assuming image URL is part of it)
+

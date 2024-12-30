@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+        }
+        header input[type="text"] {
+            width: 80%;
+            padding: 10px;
+            font-size: 16px;
+        }
+        .business-image {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .business-image img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+        .menu-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .menu-item {
+            text-align: center;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+        }
+        .menu-item img {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+        .menu-item .details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+        }
+        .menu-item .details span {
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .quantity-control {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+        }
+        .quantity-control button {
+            padding: 5px 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .footer button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .footer .back-button {
+            background-color: #6c757d;
+            color: white;
+        }
+        .footer .details-button {
+            background-color: #007bff;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+{% include "models/navbar.html" %}
+<header>
+    <input type="text" id="searchBar" placeholder="Search for menu items...">
+</header>
+
+<div class="business-image">
+    <img src="{{ business.image_url }}" alt="{{ business.name }}">
+</div>
+
+<div class="menu-list">
+    {% for item in menu_items %}
+    <div class="menu-item">
+        <img src="{{ item.image_url }}" alt="{{ item.name }}">
+        <div class="details">
+            <span>${{ item.price }}</span>
+            <div class="quantity-control">
+                <button onclick="decreaseQuantity({{ item.id }})">-</button>
+                <input type="text" id="quantity{{ item.id }}" value="0" readonly>
+                <button onclick="increaseQuantity({{ item.id }})">+</button>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="footer">
+    <button class="back-button" onclick="goBack()">Back</button>
+    <button class="details-button" onclick="viewDetails()">View Details</button>
+</div>
+
+<script>
+    function decreaseQuantity(itemId) {
+        const quantityInput = document.getElementById('quantity' + itemId);
+        let currentValue = parseInt(quantityInput.value);
+        if (currentValue > 0) {
+            quantityInput.value = currentValue - 1;
+        }
+    }
+
+    function increaseQuantity(itemId) {
+        const quantityInput = document.getElementById('quantity' + itemId);
+        let currentValue = parseInt(quantityInput.value);
+        quantityInput.value = currentValue + 1;
+    }
+
+    function goBack() {
+        window.location.href = 'user_home.html';
+    }
+
+    function viewDetails() {
+        const selectedItems = [];
+        document.querySelectorAll('.menu-item').forEach(item => {
+            const itemId = item.querySelector('button').getAttribute('onclick').match(/\d+/)[0];
+            const quantity = parseInt(document.getElementById('quantity' + itemId).value);
+            if (quantity > 0) {
+                selectedItems.push({
+                    id: itemId,
+                    quantity: quantity
+                });
+            }
+        });
+        if (selectedItems.length > 0) {
+            fetch('/order_confirm', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(selectedItems)
+            })
+            .then(() => {
+                window.location.href = 'order_confirm.html';
+            });
+        } else {
+            alert('Please select at least one item.');
+        }
+    }
+</script>
+
+</body>
+</html>
