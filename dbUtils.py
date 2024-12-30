@@ -13,20 +13,7 @@ try:
     )
     #建立執行SQL指令用之cursor, 設定傳回dictionary型態的查詢結果 [{'欄位名':值, ...}, ...]
     cursor=conn.cursor(dictionary=True)
-    #連線DB
-    conn = mysql.connector.connect(
-        user="root",
-        password="",
-        host="localhost",
-        port=3306,
-        database="food"
-    )
-    #建立執行SQL指令用之cursor, 設定傳回dictionary型態的查詢結果 [{'欄位名':值, ...}, ...]
-    cursor=conn.cursor(dictionary=True)
 except mysql.connector.Error as e: # mariadb.Error as e:
-    print(e)
-    print("Error connecting to DB")
-    exit(1)
     print(e)
     print("Error connecting to DB")
     exit(1)
@@ -35,10 +22,6 @@ except mysql.connector.Error as e: # mariadb.Error as e:
 #登入
 
 def login(username, password):
-def login(username, password):
-    """驗證用戶的帳號和密碼，返回用戶資訊或 None。"""
-    sql = "SELECT * FROM `user` WHERE username = %s AND password = %s"
-    param=(username, password)
     sql = "SELECT * FROM `user` WHERE username = %s AND password = %s"
     param=(username, password)
     cursor.execute(sql,param)
@@ -80,7 +63,6 @@ def get_available_order() :
     return cursor.fetchall()
 
 def get_menu_order(order):
-    # print(order)
     sql = "SELECT `id` FROM `store_menu` WHERE name = %s"
     param = [order]
     cursor.execute(sql, param)
@@ -97,11 +79,7 @@ def add_customer_order(id, store_id, destination) :
       (`customer_id`, `store_id`, `delivery_id`, `destination`) 
       VALUES ( %s,%s,%s, %s)"""
     param = (id,store_id,str(-1),destination)
-    # print(param)
-
     cursor.execute(sql,param)
-    # print(customer_id)
-    # customer_id = cursor.lastrowid
     conn.commit()
     customer_id = cursor.lastrowid
     
@@ -131,19 +109,6 @@ def add_store_menu(store_id):
     return
 
 
-# edit
-
-def edit_store_menu(store_id):
-    sql = """
-    UPDATE `store_menu` 
-    SET
-    `name` = %s ,`price` = %s,`intro` = %s ,`status`= %s
-    WHERE `sid` = %s
-"""
-    param = (store_id)
-    cursor.execute(sql,param)
-    conn.commit()
-    return
 
 # edit
 
@@ -153,7 +118,7 @@ def edit_store_menu(store_id):
     SET
     `name` = %s ,`price` = %s,`intro` = %s ,`status`= %s
     WHERE `sid` = %s
-"""
+    """
     param = (store_id)
     cursor.execute(sql,param)
     conn.commit()
