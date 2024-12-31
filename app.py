@@ -146,10 +146,16 @@ def api_store_order(store_id):
     add_order = dbUtils.add_order_menu(order_id, customer_order_id)
     return {"data": customer_order_id}
 
-@app.route('/order-list', methods=['GET'])
+
+@app.route('/order-list', methods=['GET']) # 待送清單（送貨員）
 def api_order_list():
     order_list = dbUtils.get_available_order()
     return {"data": order_list}
+
+@app.route('/order-list/<int:order_menu_id>', methods=['POST']) # 待送清單詳細（送貨員）
+def api_customer_order(order_menu_id):
+    customer_order = dbUtils.get_customer_order(order_menu_id)
+    return {"data": customer_order}
 
 @app.route('/store-menu/<int:store_id>', methods=['GET'])
 def api_store_self_menu(store_id):

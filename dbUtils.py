@@ -48,8 +48,14 @@ def get_customer_id(id) :
     cursor.execute(sql,param)
     return cursor.fetchall()
 
+def get_delivery_id(id) :
+    sql = "SELECT id FROM `delivery` where uid = %s"
+    param = [id]
+    cursor.execute(sql,param)
+    return cursor.fetchall()
+
 def get_customer_order(order_menu_id) :
-    sql = "select id from `store_menu` where id = %s"
+    sql = "select * from `order_menu` where id = %s"
     param = (order_menu_id)
     cursor.execute(sql, param)
     return cursor.fetchall()
@@ -76,9 +82,9 @@ def add_customer_order(id, store_id, destination) :
     sql = """
     INSERT INTO
       `customer_order`
-      (`customer_id`, `store_id`, `delivery_id`, `destination`) 
-      VALUES ( %s,%s,%s, %s)"""
-    param = (id,store_id,str(-1),destination)
+      (`customer_id`, `store_id`, `delivery_id`, `destination`,`status`) 
+      VALUES ( %s,%s,%s,%s,%s)"""
+    param = (id,store_id,str(-1),destination,str(1))
     cursor.execute(sql,param)
     conn.commit()
     customer_id = cursor.lastrowid
