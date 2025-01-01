@@ -15,6 +15,7 @@
       <table border="1">
         <thead>
           <tr>
+            <th>id</th>
             <th>Order</th>
             <th>Store</th>
             <th>Price</th>
@@ -24,6 +25,7 @@
         <tbody>
           {%if data != []%}
           <tr>
+            <td>{{ data[0].id }}</td>
             <td>{{ data[0].order }}</td>
             <td>{{ data[0].store }}</td>
             <td>{{ data[0].price }}</td>
@@ -33,11 +35,19 @@
         </tbody>
       </table>
       <div>
+        {%if data != []%}
         <div class="col-2 d-flex flex-column align-items-center">
-          <button class="btn btn-primary btn-sm mb-2 w-100">接單</button>
-          <button class="btn btn-warning btn-sm mb-2 w-100">取貨</button>
-          <button class="btn btn-success btn-sm w-100">送達簽收</button>
+
+          <form action="/order-list/{{ data[0].id }}">
+            <button type="submit" name="change_status" value="2">接單</button>
+          </form>
+
+          <form action="/order-list/{{ data[0].id }}">
+            <button type="submit" name="change_status" value="3">簽收</button>
+          </form>
+          
         </div>
+        {%endif%}
       </div>
       <!-- 顯示可接訂單的列表
       <div class="row">

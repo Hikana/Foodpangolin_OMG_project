@@ -56,11 +56,11 @@ def get_delivery_id(id) : # 送貨員 ID ，接單用
 
 def get_customer_order(order_menu_id) : # 待送訂單的詳細，送貨員接單用
     sql = """
-        SELECT str_m.name as "order", s.name as "store", str_m.price, cus_o.destination 
-        FROM `order_menu` as odr_m 
-        inner join `customer_order` as cus_o on odr_m.customer_order_id = cus_o.id
-        inner join `store_menu` as str_m on odr_m.menu_id = str_m.id
-        inner join `store` as s on str_m.sid = s.id
+        SELECT odr_m.id, str_m.name as "order", s.name as "store", str_m.price, cus_o.destination 
+        FROM order_menu as odr_m 
+        inner join customer_order as cus_o on odr_m.customer_order_id = cus_o.id
+        inner join store_menu as str_m on odr_m.menu_id = str_m.id
+        inner join store as s on str_m.sid = s.id
         WHERE odr_m.id = %s
     """
     param = [order_menu_id]
@@ -159,16 +159,17 @@ def edit_store_menu(store_id):
     conn.commit()
     return
 
-def edit_customer_delivery(delivery_id,order_menu_id) : # 接單後把 delivery_id 的 -1 改成送貨員的 ID
+def edit_customer_delivery(delivery_id,order_menu_id,status) : # 接單後把 delivery_id 的 -1 改成送貨員的 ID / 加上 status 更改
     sql = """
         UPDATE `customer_order` 
         inner join `order_menu` on order_menu.customer_order_id = customer_order.id
-        set customer_order.delivery_id = %s
-        WHERE order_menu.id = %s
+        set customer_order.delivery_id = %s,customer_order.status = %s
+        WHERE order_menu.customer_order_id = %s
     """
-    param = (delivery_id,order_menu_id)
-    print(param)
+    param = (delivery_id,status,order_menu_id)
     cursor.execute(sql, param)
+    conn.commit()
     return
+
 
 

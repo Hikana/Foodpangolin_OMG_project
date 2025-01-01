@@ -160,18 +160,24 @@ def api_order_list():
     order_list = dbUtils.get_available_order()
     delivery_id = dbUtils.get_delivery_id(session['id'])[0]["id"]
     delivery_list = dbUtils.get_delivery_order_list(delivery_id)
+    print(order_list,"sb=====================sb")
     return {"data": order_list, "order": delivery_list}
 
 @app.route('/order-list/<int:order_menu_id>', methods=['GET']) # 待送清單詳細（送貨員）
 def api_customer_order(order_menu_id):
+    print("==========確定進入路由")
+    status = request.args["change_status"]
     customer_order = dbUtils.get_customer_order(order_menu_id)
+    delivery_id = dbUtils.get_delivery_id(session['id'])[0]["id"]
+    dbUtils.edit_customer_delivery(session['id'], order_menu_id,status)
+    print("---------------------",customer_order)   
     return {"data": customer_order}
 
-@app.route('/order-list/<int:order_menu_id>', methods=['POST']) # 接單（送貨員）
-def api_customer_delivery(order_menu_id):
-    delivery_id = dbUtils.get_delivery_id(session['id'])[0]["id"]
-    customer_delivery = dbUtils.edit_customer_delivery(delivery_id, order_menu_id)
-    return {"data": customer_delivery}
+# @app.route('/order-list/<string:order_menu_id>', methods=['POST','GET']) # 接單（送貨員）
+# def api_customer_delivery(order_menu_id):
+#     delivery_id = dbUtils.get_delivery_id(session['id'])[0]["id"]
+#     customer_delivery = dbUtils.edit_customer_delivery(delivery_id, order_menu_id)
+#     return {"data": customer_delivery}
 
 
 #================================================
