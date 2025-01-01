@@ -89,8 +89,16 @@ def get_menu_order(order): # 找到餐點的 ID，點餐用（要加進 order_me
     cursor.execute(sql, param)
     return cursor.fetchone()
 
-def get_delivery_order_list(delivery_id): # 找到外送員已接的訂單
-    sql = "SELECT `id` FROM `store_menu` WHERE name = %s"
+def get_delivery_order_list(delivery_id): # 找到外送員已接的訂單（目的地、客戶姓名、商店、餐點內容）
+    sql = """
+        SELECT customer_order.destination, customer.name, store.name, store_menu.name 
+        FROM `customer_order`
+        INNER JOIN `customer` ON customer.id = customer_order.customer_id
+        INNER JOIN `store` ON store.id = customer_order.store_id
+        INNER JOIN `order_menu` ON customer_order.id = order_menu.customer_order_id
+        INNER JOIN `store_menu` ON order_menu.menu_id = store_menu.id
+        WHERE customer_order.delivery_id = 1
+        """
     param = [delivery_id]
     cursor.execute(sql, param)
     return cursor.fetchall()
