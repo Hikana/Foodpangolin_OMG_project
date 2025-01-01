@@ -9,6 +9,7 @@ url_role_map = {
     1: "/store",
     2: "/customer",
     3: "/delivery",
+    4: "/platform",
 }
 
 
@@ -82,6 +83,14 @@ def customer():
 def delivery():
     return render_template('delivery.html')
 
+#================================================
+@app.route('/platform', methods=['GET']) # 送貨員首頁
+@login_required
+@role_check
+def platform():
+    data = dbUtils.get_all_users()
+    print(session['id'],"dddeeedddeeedddeee===>?>>")
+    return render_template('platform.html',data = data)
 #================================================
 @app.route('/customer/store/<int:store_id>', methods=['GET']) 
 @login_required
@@ -170,8 +179,16 @@ def api_customer_order(order_menu_id):
     print("==========確定進入路由")
     status = request.args["change_status"]
     customer_order = dbUtils.get_customer_order(order_menu_id)
-    delivery_id = dbUtils.get_delivery_id(session['id'])[0]["id"]
+    # delivery_id = dbUtils.get_delivery_id(session['id'])[0]["id"]
     dbUtils.edit_customer_delivery(session['id'], order_menu_id,status)
+    
+    # 到最後一步，訂單完成 => status4 影響 platf
+    if status == "4":
+        a = dbUtils.get_price(customer_order[0]['id'])
+        order_all = dbUtils.get_customer_all_order()
+        dbUtils.edit_sumry(order_all[0]['customer_id'], order_all[0]['store_id'], order_all[0]['delivery_id'], a['price'])
+        print("aserdfghjgesdzxg fgfdgsdftgzesrthsw4e5tesxjtse5tdrhythdrxyterty")
+
     print("---------------------",customer_order)   
     return {"data": customer_order}
 

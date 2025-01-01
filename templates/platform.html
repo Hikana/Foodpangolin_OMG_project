@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% include "models/bs_css.html" %}
+    <title>Document</title>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <h1 class="text-center">This 點餐外送平台 for platform</h1>
+            <main>
+              <h2>商家</h2>
+              <table border="1">
+                <tr>
+                    <th>商家ID</th>
+                    <th>商家名稱</th>
+                    <th>應收金額</th>
+                </tr>
+                <!-- 範例 -->
+                 <!-- {%for rec in data%} -->
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <!-- {%endfor%} -->
+              </table>
+
+              <h2>小哥單</h2>
+              <table border="1">
+                <tr>
+                    <th>小哥ID</th>
+                    <th>小哥名稱</th>
+                    <th>接單總金額</th>
+                </tr>
+                <!-- 範例 -->
+                <!-- {%for rec in data%} -->
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <!-- {%endfor%} -->
+              </table>
+
+              <h2>客戶應付</h2>
+              <table border="1">
+                <tr>
+                    <th>客戶ID</th>
+                    <th>客戶名稱</th>
+                    <th>應付金額</th>
+                </tr>
+                <!-- 範例 -->
+                <!-- {%for rec in data%} -->
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <!-- {%endfor%} -->
+            </table>
+
+            </main>
+        </div>
+
+    </div>
+    
+    {% include "models/bs_js.html" %}
+</body>
+</html>

@@ -69,8 +69,44 @@ def meal_status_complete(id) :
     param = [id]
     cursor.execute(sql, param)
     conn.commit()
+    return    
+
+def get_all_users() : # get infom from user 
+    sql = "SELECT * FROM `user`"
+    cursor.execute(sql,)
+    return cursor.fetchall()
+
+def get_price(id) : # "新" 三張表組合 ， 為了 order_id
+    sql = """
+        SELECT price
+        FROM `customer_order` 
+        inner join `order_menu` on customer_order.id = order_menu.customer_order_id
+        inner join `store_menu` on store_menu.id = order_menu.menu_id
+        WHERE customer_order_id = %s
+    """
+    param = [id]
+    cursor.execute(sql,param)
+    return cursor.fetchone()
+
+
+
+
+def edit_sumry(cid,sid,did,price) :
+    sql = "UPDATE `user` set summary = summary+%s WHERE id = %s"
+    param = (int(price),sid,)
+    cursor.execute(sql, param)
+    conn.commit()
+
+    sql = "UPDATE `user` set summary = summary+%s WHERE id = %s"
+    param = (int(price),cid)
+    cursor.execute(sql, param)
+    conn.commit()
+
+    sql = "UPDATE `user` set summary = summary+1 WHERE id = %s"
+    param = (did,)
+    cursor.execute(sql, param)
+    conn.commit()
     return
-    
     
 # ====
 
@@ -88,16 +124,21 @@ def get_delivery_id(id) : # 送貨員 ID ，接單用
 
 def get_customer_order(order_menu_id) : # 待送訂單的詳細，送貨員接單用
     sql = """
-        SELECT odr_m.id, str_m.name as "order", s.name as "store", str_m.price, cus_o.destination 
+        SELECT cus_o.id, str_m.name as "order", s.name as "store", str_m.price, cus_o.destination 
         FROM order_menu as odr_m 
         inner join customer_order as cus_o on odr_m.customer_order_id = cus_o.id
         inner join store_menu as str_m on odr_m.menu_id = str_m.id
         inner join store as s on str_m.sid = s.id
-        WHERE odr_m.id = %s
+        WHERE cus_o.id = %s
     """
     param = [order_menu_id]
     print(param)
     cursor.execute(sql, param)
+    return cursor.fetchall()
+
+def get_customer_all_order() :
+    sql =  "SELECT * FROM customer_order"
+    cursor.execute(sql, )
     return cursor.fetchall()
 
 
