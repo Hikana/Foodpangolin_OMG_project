@@ -94,7 +94,8 @@ def customer_stroe(store_id):
 @role_check
 def delivery_order(order_id):
     print(order_id)
-    return render_template('delivery_order.html')
+    data = dbUtils.get_customer_order(order_id)
+    return render_template('delivery_order.html',data = data)
 
 @app.route('/store/menu/<int:menu_id>', methods=['GET']) 
 @role_check

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% include "models/bs_css.html" %}
+    <title>Document</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <h1 class="text-center">This 點餐外送平台 for delivery</h1>
+      </div>
+
+      <table border="1">
+        <thead>
+          <tr>
+            <th>Order</th>
+            <th>Store</th>
+            <th>Price</th>
+            <th>Destination</th>
+          </tr>
+        </thead>
+        <tbody>
+          {%if data != []%}
+          <tr>
+            <td>{{ data[0].order }}</td>
+            <td>{{ data[0].store }}</td>
+            <td>{{ data[0].price }}</td>
+            <td>{{ data[0].destination }}</td>
+          </tr>
+          {%endif%}
+        </tbody>
+      </table>
+      <div>
+        <div class="col-2 d-flex flex-column align-items-center">
+          <button class="btn btn-primary btn-sm mb-2 w-100">接單</button>
+          <button class="btn btn-warning btn-sm mb-2 w-100">取貨</button>
+          <button class="btn btn-success btn-sm w-100">送達簽收</button>
+        </div>
+      </div>
+      <!-- 顯示可接訂單的列表
+      <div class="row">
+        <div class="col-6 m-auto">
+          <div class="order-list row">
+            
+          </div>
+
+        </div>
+      </div>
+    </div> -->
+
+    {% include "models/bs_js.html" %}
+    <!-- <script src="/static/javascripts/delivery.js"></script> -->
+  </body>
+</html>

@@ -71,7 +71,7 @@ def get_customer_order(order_menu_id) : # 待送訂單的詳細，送貨員接�
 
 def get_available_order() : # 找到還沒被接的訂單，送貨員首頁用
     sql = """
-        SELECT str_m.name, s.name, str_m.price, cus_o.destination 
+        SELECT customer_order_id as id, str_m.name, s.name, str_m.price, cus_o.destination 
         FROM `order_menu` as odr_m 
         inner join `customer_order` as cus_o on odr_m.customer_order_id = cus_o.id
         inner join `store_menu` as str_m on odr_m.menu_id = str_m.id
@@ -91,7 +91,7 @@ def get_menu_order(order): # 找到餐點的 ID，點餐用（要加進 order_me
 
 def get_delivery_order_list(delivery_id): # 找到外送員已接的訂單（目的地、客戶姓名、商店、餐點內容）
     sql = """
-        SELECT customer_order.status customer_order.destination, customer.name, store.name, store_menu.name 
+        SELECT customer_order.status, customer_order.destination, customer.name, store.name, store_menu.name 
         FROM `customer_order`
         INNER JOIN `customer` ON customer.id = customer_order.customer_id
         INNER JOIN `store` ON store.id = customer_order.store_id
