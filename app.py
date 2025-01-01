@@ -1,10 +1,7 @@
 from functools import wraps
 from flask import Flask, redirect, render_template, request, session
 import dbUtils
-from flask import Flask, redirect, render_template, request, session
-import dbUtils
 
-app = Flask(__name__)
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '123TyU%^&'
 
@@ -13,11 +10,7 @@ url_role_map = {
     2: "/customer",
     3: "/delivery",
 }
-url_role_map = {
-    1: "/store",
-    2: "/customer",
-    3: "/delivery",
-}
+
 
 def login_required(f):
     @wraps(f)
@@ -25,10 +18,7 @@ def login_required(f):
 
         if not session.get('loginID'):
             return redirect('/login')
-            return redirect('/login')
         return f(*args, **kwargs)
-
-
     return wrapper
 
 
@@ -97,6 +87,13 @@ def customer_stroe(store_id):
     
     return render_template('customer_store.html')
 
+@app.route('/delivery/order/<int:order_id>', methods=['GET']) 
+@login_required
+@role_check
+def delivery_order(order_id):
+    print(order_id)
+    return render_template('delivery_order.html')
+
 
 # api
 @app.route('/login', methods=['POST']) # 登入（所有人）
@@ -114,7 +111,7 @@ def api_login():
         return {"url": url_role_map[user_info['role']]}
     return {"url": "/login"}
 
-
+# 顧客
 @app.route('/store-list', methods=['GET']) # 列出商店資訊（顧客）
 def api_store_list():
     store_list = dbUtils.get_store_list()
@@ -147,17 +144,28 @@ def api_store_order(store_id):
     return {"data": customer_order_id}
 
 
-@app.route('/order-list', methods=['GET']) # 待送清單（送貨員）
+# 送貨員
+@app.route('/order-list', methods=['GET']) # 待送清單跟已接訂單（送貨員）
 def api_order_list():
     order_list = dbUtils.get_available_order()
-    return {"data": order_list}
+    delivery_id = dbUtils.get_delivery_id(session['id'])[0]["id"]
+    delivery_list = dbUtils.get_delivery_order_list(delivery_id)
+    return {"data": order_list, "order": delivery_list}
 
-@app.route('/order-list/<int:order_menu_id>', methods=['POST']) # 待送清單詳細（送貨員）
+@app.route('/order-list/<int:order_menu_id>', methods=['GET']) # 待送清單詳細（送貨員）
 def api_customer_order(order_menu_id):
     customer_order = dbUtils.get_customer_order(order_menu_id)
     return {"data": customer_order}
 
-@app.route('/store-menu/<int:store_id>', methods=['GET'])
+@app.route('/order-list/<int:order_menu_id>', methods=['POST']) # 接單（送貨員）
+def api_customer_delivery(order_menu_id):
+    delivery_id = dbUtils.get_delivery_id(session['id'])[0]["id"]
+    customer_delivery = dbUtils.edit_customer_delivery(delivery_id, order_menu_id)
+    return {"data": customer_delivery}
+
+
+# 商店
+@app.route('/store-menu/<int:store_id>', methods=['GET']) # 
 def api_store_self_menu(store_id):
     store_menu = dbUtils.get_store_menu(store_id)
     return {"data": store_menu}
