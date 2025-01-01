@@ -97,7 +97,7 @@ def get_delivery_order_list(delivery_id): # 找到外送員已接的訂單（目
         INNER JOIN `store` ON store.id = customer_order.store_id
         INNER JOIN `order_menu` ON customer_order.id = order_menu.customer_order_id
         INNER JOIN `store_menu` ON order_menu.menu_id = store_menu.id
-        WHERE customer_order.delivery_id = 1
+        WHERE customer_order.delivery_id = %s
         """
     param = [delivery_id]
     cursor.execute(sql, param)
