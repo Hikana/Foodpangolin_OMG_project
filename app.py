@@ -96,6 +96,12 @@ def delivery_order(order_id):
     print(order_id)
     return render_template('delivery_order.html')
 
+@app.route('/store/menu/<int:menu_id>', methods=['GET']) 
+@role_check
+def store_menu(menu_id):
+    print(menu_id)
+    return render_template('store_menu.html')
+
 #================================================
 # api
 @app.route('/login', methods=['POST']) # 登入（所有人）
@@ -114,7 +120,7 @@ def api_login():
     return {"url": "/login"}
 
 #================================================
-# 顧客
+# 顧客頁面
 @app.route('/store-list', methods=['GET']) # 列出商店資訊（顧客）
 def api_store_list():
     store_list = dbUtils.get_store_list()
@@ -147,7 +153,7 @@ def api_store_order(store_id):
     return {"data": customer_order_id}
 
 #================================================
-# 送貨員
+# 送貨員頁面
 @app.route('/order-list', methods=['GET']) # 待送清單跟已接訂單（送貨員）
 def api_order_list():
     order_list = dbUtils.get_available_order()
@@ -168,8 +174,8 @@ def api_customer_delivery(order_menu_id):
 
 
 #================================================
-# 商店
-@app.route('/store-menu/<int:store_id>', methods=['GET']) # 
+# 商店頁面
+@app.route('/menu-list', methods=['GET']) # 商店菜單
 def api_store_self_menu(store_id):
     store_menu = dbUtils.get_store_menu(store_id)
     return {"data": store_menu}
