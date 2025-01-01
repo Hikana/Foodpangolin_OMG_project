@@ -64,7 +64,9 @@ def login():
 @login_required
 @role_check
 def store():
-    return render_template('store.html')
+    data = dbUtils.get_store_self_order_list(session['id'])
+    print(session['id'])
+    return render_template('store.html',data = data )
 
 #================================================
 @app.route('/customer', methods=['GET']) # 客戶首頁
@@ -183,10 +185,22 @@ def api_customer_order(order_menu_id):
 #================================================
 # 商店頁面
 @app.route('/menu-list', methods=['GET']) # 商店菜單
-def api_store_self_menu(store_id):
-    store_menu = dbUtils.get_store_menu(store_id)
+def api_store_self_menu():
+    store_menu = dbUtils.get_store_menu(session['id'])
     return {"data": store_menu}
 
+@app.route('/menu-order-list', methods=['GET']) # 商店拿取order部分
+def api_store_self_order():
+    store_order = dbUtils.get_store_self_order_list(session['id'])
+    print(store_order,"nignaignnagingianignai")
+    return {"data": store_order}
+
+@app.route('/menu-order-complete',methods=['GET']) # 完成訂單的部分
+def api_complete_status():
+    oid = request.args['id']
+    store_order = dbUtils.meal_status_complete(oid)
+    print(store_order,"=d=d=d==d=d=d=d=d=d=")
+    return {"data": store_order}
 
 if __name__ == '__main__':
     app.run(debug=True)

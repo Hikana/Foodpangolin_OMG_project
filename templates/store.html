@@ -17,30 +17,33 @@
                 <p>簡介：這裡是商家的描述。</p>
                 <p>練絡方式：這裡是商家的聯絡方式。</p>
                 
+                {{ data }}
+
                 <section id="menu">
                     <h2>菜單</h2>
                     <table border="1">
                         <tr>
+                            <th>訂單編號</th>
                             <th>菜名</th>
                             <th>價格</th>
                             <th>簡介</th>
-                            <th>狀態</th>
                             <th>操作</th>
                         </tr>
                         <!-- 範例 -->
+                         {%for rec in data%}
                         <tr>
-                            <td>麻婆豆腐</td>
-                            <td>$150</td>
-                            <td>正宗四川風味</td>
-                            <td>供應中</td>
-                            <td><button>售完</button></td>
+                            <td>{{ rec.customer_order_id }}</td>
+                            <td>{{ rec.name }}</td>
+                            <td>{{ rec.price }}</td>
+                            <td>{{ rec.intro }}</td>
+                            <td><a href="/menu-order-complete?id={{ rec.customer_order_id }}">完成</a></td>
                         </tr>
+                        {%endfor%}
                     </table>
                 </section>
         
                 <section id="actions">
                     <button onclick="window.location.href='add_dish.html'">新增菜色</button>
-                    <button onclick="window.location.href='/merchant/orders.html'">所有訂單</button>
                 </section>
             </main>
         </div>

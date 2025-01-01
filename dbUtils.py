@@ -36,11 +36,43 @@ def get_store_list() : # 商店清單(給顧客)
     return cursor.fetchall()
 
 def get_store_menu(sid) : # 商店的菜單
-    sql = "SELECT name, price, intro FROM `store_menu` where sid = %s"
+    sql = "SELECT * FROM `store_menu` where sid = %s"
     param = [sid]
     cursor.execute(sql,param)
-    
     return cursor.fetchall()
+
+# ==== 邪教
+# def get_store_self_order_list(store_id) :
+#     sql = "SELECT * FROM `customer_order` where status = 1 and store_id = %s"
+#     param = [store_id]
+#     cursor.execute(sql,param)
+#     return cursor.fetchall()
+
+def get_store_self_order_list(id) : # 三張表組合
+    sql = """
+        SELECT *
+        FROM `customer_order` 
+        inner join `order_menu` on customer_order.id = order_menu.customer_order_id
+        inner join `store_menu` on store_menu.id = order_menu.menu_id
+        WHERE customer_order.status = 1 and store_id= %s
+    """
+    param = [id]
+    cursor.execute(sql,param)
+    return cursor.fetchall()
+
+def meal_status_complete(id) :
+    sql = """
+        UPDATE `customer_order` 
+        set status = 2
+        WHERE id = %s
+    """
+    param = [id]
+    cursor.execute(sql, param)
+    conn.commit()
+    return
+    
+    
+# ====
 
 def get_customer_id(id) : # 顧客的 ID ，點餐用
     sql = "SELECT id FROM `customer` where uid = %s"
