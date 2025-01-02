@@ -216,6 +216,20 @@ def get_customer_order(order_menu_id) : # 待送訂單的詳細，送貨員接�
     print(param)
     cursor.execute(sql, param)
     return cursor.fetchall()
+def get_order(sid): # 列出店家的訂單
+    sql = """
+        SELECT customer.name, delivery.name, store_menu.name, customer_order.destination 
+        FROM `customer_order`
+        INNER JOIN `customer` ON customer_order.customer_id = customer.id
+        INNER JOIN `delivery` ON customer_order.delivery_id = delivery.id
+        INNER JOIN `order_menu` ON order_menu.customer_order_id = customer_order.id
+        INNER JOIN `store_menu` ON store_menu.id = order_menu.menu_id
+        INNER JOIN `store` ON customer_order.store_id = store.id
+        WHERE store.id = %s"""
+    param = [sid]
+    print(param)
+    cursor.execute(sql, param)
+    return cursor.fetchall()
 
 def get_customer_all_order(order_menu_id) : # 拿到所有用戶的 ID
     sql =  "SELECT customer_id, store_id, delivery_id FROM customer_order where id = %s"
