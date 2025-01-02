@@ -89,7 +89,7 @@ def delivery():
 @role_check
 def platform():
     data = dbUtils.get_all_users()
-    print(session['id'],"dddeeedddeeedddeee===>?>>")
+    print(session['id'])
     return render_template('platform.html',data = data)
 #================================================
 @app.route('/customer/store/<int:store_id>', methods=['GET']) 
@@ -169,17 +169,16 @@ def api_store_order(store_id):
 @app.route('/order-list', methods=['GET']) # 待送清單跟已接訂單（送貨員）
 def api_order_list():
     order_list = dbUtils.get_available_order()
-    print("================",order_list)
+    print(order_list)
     delivery_id = dbUtils.get_delivery_id(session['id'])[0]["id"]
-    print("+++++++++++++++",delivery_id)
+    print(delivery_id)
     delivery_list = dbUtils.get_delivery_order_list(delivery_id)
-    print("***********************",delivery_list)
-    print(order_list,"sb=====================sb")
+    print(delivery_list)
+    print(order_list)
     return {"data": order_list, "order": delivery_list}
 
 @app.route('/order-list/<int:order_menu_id>', methods=['GET']) # 待送清單詳細（送貨員）
 def api_customer_order(order_menu_id):
-    print("==========確定進入路由")
     status = request.args["change_status"]
     customer_order = dbUtils.get_customer_order(order_menu_id)
     delivery_id = dbUtils.get_delivery_id(session['id'])[0]["id"]
@@ -189,10 +188,10 @@ def api_customer_order(order_menu_id):
     if status == "4":
         a = dbUtils.get_price(customer_order[0]['id'])
         order_all = dbUtils.get_customer_all_order(order_menu_id)
-        print("////////////////////////////",order_all)
+        print(order_all)
         dbUtils.edit_sumry(order_all[0]['customer_id'], order_all[0]['store_id'], order_all[0]['delivery_id'], a['price'])
 
-    print("---------------------",customer_order)   
+    
     return {"data": customer_order}
 
 # @app.route('/order-list/<string:order_menu_id>', methods=['POST']) # 接單（送貨員）
@@ -206,20 +205,21 @@ def api_customer_order(order_menu_id):
 # 商店頁面
 @app.route('/menu-list', methods=['GET']) # 商店菜單
 def api_store_self_menu():
-    store_menu = dbUtils.get_store_menu(session['id'])
+    sid = dbUtils.get_store_id(session['id'])[0]["id"]
+    store_menu = dbUtils.get_store_menu(sid)
     return {"data": store_menu}
 
 @app.route('/menu-order-list', methods=['GET']) # 商店拿取order部分
 def api_store_self_order():
     store_order = dbUtils.get_store_self_order_list(session['id'])
-    print(store_order,"nignaignnagingianignai")
+    print(store_order)
     return {"data": store_order}
 
 @app.route('/menu-order-complete',methods=['GET']) # 完成訂單的部分
 def api_complete_status():
     oid = request.args['id']
     store_order = dbUtils.meal_status_complete(oid)
-    print(store_order,"=d=d=d==d=d=d=d=d=d=")
+    print(store_order)
     return {"data": store_order}
 
 
@@ -237,7 +237,7 @@ def api_complete_status():
 # 新增路由
 @app.route('/view_menu',methods=['GET']) #查看菜單
 def vmenu():
-    sid = session['id']
+    sid = dbUtils.get_store_id(session['id'])[0]["id"]
     data = dbUtils.store_own_list(sid)
     return render_template('/menu.html', data=data, sid=sid)
 
@@ -249,7 +249,7 @@ def addmenu():
 @app.route('/add',methods=['POST']) #新增菜單
 def add():
     form = request.form
-    sid = session['id']
+    sid = dbUtils.get_store_id(session['id'])[0]["id"]
     name = form['name']
     price = form['price']
     intro = form['intro']

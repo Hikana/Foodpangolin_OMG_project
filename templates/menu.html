@@ -21,8 +21,8 @@
       <td>{{ rec.price }}</td>
       <td>{{ rec.intro }}</td>
       <td>
-        <a href="/fixfoodUI?food_id={{ rec.id }}">修改</a>
-        <a href="/dele?food_id={{ rec.id }}" onclick="return confirmDelete();">刪除</a>
+        <a href="/fixfoodUI?food_id={{ rec.id }}"><button>修改</button></a>
+        <a href="/dele?food_id={{ rec.id }}" onclick="return confirmDelete();"><button>刪除</button></a>
       </td>
   </tr>
   {%endfor%}

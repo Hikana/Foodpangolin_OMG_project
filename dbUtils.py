@@ -197,6 +197,12 @@ def get_delivery_id(id) : # 送貨員 ID ，接單用
     cursor.execute(sql,param)
     return cursor.fetchall()
 
+def get_store_id(id) : # 商店 ID ，新增菜單用
+    sql = "SELECT id FROM `store` where uid = %s"
+    param = [id]
+    cursor.execute(sql,param)
+    return cursor.fetchall()
+
 def get_customer_order(order_menu_id) : # 待送訂單的詳細，送貨員接單用
     sql = """
         SELECT cus_o.status, cus_o.id, str_m.name as "order", s.name as "store", str_m.price, cus_o.destination 
