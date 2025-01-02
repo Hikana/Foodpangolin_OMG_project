@@ -88,7 +88,7 @@ def the_food(id) : # 自己的菜單
     cursor.execute(sql,param)
     return cursor.fetchone()
 
-def store_own_list(id) : # 自己的菜單
+def store_own_list(id) : # 店家自己的菜單
     sql = """
         SELECT *
         FROM `store_menu` 
