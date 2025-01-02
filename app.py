@@ -239,6 +239,7 @@ def api_complete_status():
 def vmenu():
     sid = dbUtils.get_store_id(session['id'])[0]["id"]
     data = dbUtils.store_own_list(sid)
+    order = dbUtils.get_o
     return render_template('/menu.html', data=data, sid=sid)
 
 
