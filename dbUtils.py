@@ -42,6 +42,64 @@ def get_store_menu(sid) : # 商店的菜單
     return cursor.fetchall()
 
 # ==== 邪教
+
+def dele_food(id):
+    sql = """
+        DELETE FROM `store_menu` 
+        WHERE id = %s;
+    """
+    param = (id,)
+    cursor.execute(sql,param)
+    conn.commit()
+    return
+
+
+
+def fix_food(name, price, intro, food_id):
+    sql = """
+        update `store_menu` 
+        SET name=%s, intro=%s ,price=%s
+        where id = %s
+    """
+    param = [name, intro, price, food_id]
+    cursor.execute(sql,param)
+    conn.commit()
+    return
+
+def add_food(name, price, intro, sid):
+    sql = """
+        insert `store_menu` 
+        SET `name`=%s, `intro`=%s ,`price`=%s, `sid`=%s
+    """
+    param = (name, price, intro, sid)
+    cursor.execute(sql,param)
+    conn.commit()
+    return
+
+
+
+def the_food(id) : # 自己的菜單
+    sql = """
+        SELECT *
+        FROM `store_menu` 
+        WHERE id = %s
+    """
+    param = [id]
+    cursor.execute(sql,param)
+    return cursor.fetchone()
+
+def store_own_list(id) : # 自己的菜單
+    sql = """
+        SELECT *
+        FROM `store_menu` 
+        WHERE sid = %s
+    """
+    param = [id]
+    cursor.execute(sql,param)
+    return cursor.fetchall()
+
+
+
 # def get_store_self_order_list(store_id) :
 #     sql = "SELECT * FROM `customer_order` where status = 1 and store_id = %s"
 #     param = [store_id]
@@ -92,18 +150,35 @@ def get_price(id) : # "新" 三張表組合 ， 為了 order_id
 
 
 def edit_sumry(cid,sid,did,price) :
-    sql = "UPDATE `user` set summary = summary+%s WHERE id = %s"
+    sql = """
+        UPDATE `user` 
+        inner join store on user.id = store.uid
+        set `summary` = summary+%s 
+        WHERE store.id = %s
+    """
     param = (int(price),sid,)
     cursor.execute(sql, param)
     conn.commit()
 
-    sql = "UPDATE `user` set summary = summary+%s WHERE id = %s"
+    sql = """
+        UPDATE `user` 
+        inner join customer on user.id = customer.uid
+        set `summary` = summary+%s 
+        WHERE customer.id = %s
+    """
     param = (int(price),cid)
     cursor.execute(sql, param)
     conn.commit()
 
-    sql = "UPDATE `user` set summary = summary+1 WHERE id = %s"
+    sql = """
+        UPDATE `user` 
+        inner join delivery on user.id = delivery.uid
+        set `summary` = `summary` + 1 
+        WHERE delivery.id = %s
+    """
     param = (did,)
+    
+    print("+++++++++++++",param)
     cursor.execute(sql, param)
     conn.commit()
     return
@@ -124,7 +199,7 @@ def get_delivery_id(id) : # 送貨員 ID ，接單用
 
 def get_customer_order(order_menu_id) : # 待送訂單的詳細，送貨員接單用
     sql = """
-        SELECT cus_o.id, str_m.name as "order", s.name as "store", str_m.price, cus_o.destination 
+        SELECT cus_o.status, cus_o.id, str_m.name as "order", s.name as "store", str_m.price, cus_o.destination 
         FROM order_menu as odr_m 
         inner join customer_order as cus_o on odr_m.customer_order_id = cus_o.id
         inner join store_menu as str_m on odr_m.menu_id = str_m.id
@@ -136,23 +211,23 @@ def get_customer_order(order_menu_id) : # 待送訂單的詳細，送貨員接�
     cursor.execute(sql, param)
     return cursor.fetchall()
 
-def get_customer_all_order() :
-    sql =  "SELECT * FROM customer_order"
-    cursor.execute(sql, )
+def get_customer_all_order(order_menu_id) : # 拿到所有用戶的 ID
+    sql =  "SELECT customer_id, store_id, delivery_id FROM customer_order where id = %s"
+    cursor.execute(sql, (order_menu_id,))
     return cursor.fetchall()
 
 
 def get_available_order() : # 找到還沒被接的訂單，送貨員首頁用
     sql = """
-        SELECT customer_order_id as id, str_m.name, s.name, str_m.price, cus_o.destination 
+        SELECT cus_o.id as id, str_m.name, s.name, str_m.price, cus_o.destination
         FROM `order_menu` as odr_m 
         inner join `customer_order` as cus_o on odr_m.customer_order_id = cus_o.id
         inner join `store_menu` as str_m on odr_m.menu_id = str_m.id
         inner join `store` as s on str_m.sid = s.id
-        WHERE cus_o.status = %s
+        WHERE cus_o.status = 1 or cus_o.status = 3
     """
-    param = [1] # 1 : 待運送, 2: 運送中, 3: 已送達 (可再調整代碼)
-    cursor.execute(sql,param)
+    # param = [1] # 1 : 待運送, 2: 運送中, 3: 已送達 (可再調整代碼)
+    cursor.execute(sql)
     
     return cursor.fetchall()
 

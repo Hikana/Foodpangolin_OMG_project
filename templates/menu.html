@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+<a href="/addfoodUI">新增菜色</a>
+<table border="1">
+  <tr>
+      <th>菜名</th>
+      <th>價格</th>
+      <th>簡介</th>
+      <th>操作</th>
+  </tr>
+  <!-- 範例 -->
+   {%for rec in data%}
+  <tr>
+      <td>{{ rec.name }}</td>
+      <td>{{ rec.price }}</td>
+      <td>{{ rec.intro }}</td>
+      <td>
+        <a href="/fixfoodUI?food_id={{ rec.id }}">修改</a>
+        <a href="/dele?food_id={{ rec.id }}" onclick="return confirmDelete();">刪除</a>
+      </td>
+  </tr>
+  {%endfor%}
+</table>
+
+
+
+<script>
+  function confirmDelete() {
+      return confirm("確定要刪除此項目嗎？");
+  }
+</script>
+</body>
+</html>

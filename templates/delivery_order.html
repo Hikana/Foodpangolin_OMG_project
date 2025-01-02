@@ -11,7 +11,7 @@
       <div class="row">
         <h1 class="text-center">This 點餐外送平台 for delivery</h1>
       </div>
-
+      {{ data }}
       <table border="1">
         <thead>
           <tr>
@@ -37,14 +37,15 @@
       <div>
         {%if data != []%}
         <div class="col-2 d-flex flex-column align-items-center">
-
+          {%if data[0].status == 1%}
           <form action="/order-list/{{ data[0].id }}">
             <button type="submit" name="change_status" value="3">接單</button>
           </form>
-
+          {%elif data[0].status == 3%}
           <form action="/order-list/{{ data[0].id }}">
             <button type="submit" name="change_status" value="4">簽收</button>
           </form>
+          {%endif%}
           
         </div>
         {%endif%}
