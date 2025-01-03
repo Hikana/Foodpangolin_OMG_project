@@ -1,5 +1,5 @@
 from functools import wraps
-from flask import Flask, redirect, render_template, request, session
+from flask import Flask, redirect, render_template, request, session, url_for
 import dbUtils
 
 app = Flask(__name__)
@@ -69,12 +69,6 @@ def store():
     print(session['id'])
     return render_template('store.html',data = data, sid=session['id'])
 
-#================================================
-@app.route('/customer', methods=['GET']) # 客戶首頁
-@login_required
-@role_check
-def customer():
-    return render_template('customer.html')
 
 #================================================
 @app.route('/delivery', methods=['GET']) # 送貨員首頁
@@ -84,7 +78,7 @@ def delivery():
     return render_template('delivery.html')
 
 #================================================
-@app.route('/platform', methods=['GET']) # 送貨員首頁
+@app.route('/platform', methods=['GET']) # 平台首頁
 @login_required
 @role_check
 def platform():
@@ -119,24 +113,27 @@ def store_menu(menu_id):
 @app.route('/login', methods=['POST']) # 登入（所有人）
 def api_login():
     
-    form = request.json
-    username = form.get('username')
-    password = form.get('password')
+    username = request.form.get('username')
+    password = request.form.get('password')
     user = dbUtils.login(username, password)
     if user :
         user_info = user[0]
         session['loginID'] = user_info['username']
         session['role'] = user_info['role']
         session['id'] = user_info['id']
-        return {"url": url_role_map[user_info['role']]}
-    return {"url": "/login"}
+        return redirect(url_role_map.get(user_info['role'],'/'))
+    return redirect('/login')
 
 #================================================
 # 顧客頁面
-@app.route('/store-list', methods=['GET']) # 列出商店資訊（顧客）
+@app.route('/customer', methods=['GET']) # 客戶首頁
+@login_required
+@role_check
 def api_store_list():
     store_list = dbUtils.get_store_list()
     return {"data": store_list}
+
+@app.route('/store-list', methods=['GET']) # 列出商店資訊（顧客）
 
 @app.route('/store-list/<int:store_id>/menu', methods=['GET']) # 列出選取商店的菜單（顧客）
 def api_store_menu(store_id):
