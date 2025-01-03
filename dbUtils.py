@@ -29,21 +29,10 @@ def login(username, password):
 
 
 
-# get
-def get_store_list() : # 商店清單(給顧客)
-    sql = "SELECT * FROM `store`"
-    cursor.execute(sql)
-    return cursor.fetchall()
 
-def get_store_menu(sid) : # 商店的菜單
-    sql = "SELECT * FROM `store_menu` where sid = %s"
-    param = [sid]
-    cursor.execute(sql,param)
-    return cursor.fetchall()
+# 刪除
 
-# ==== 邪教
-
-def dele_food(id):
+def dele_food(id):   # 刪除店家菜單(店家用)
     sql = """
         DELETE FROM `store_menu` 
         WHERE id = %s;
@@ -100,11 +89,11 @@ def store_own_list(id) : # 店家自己的菜單
 
 
 
-# def get_store_self_order_list(store_id) :
-#     sql = "SELECT * FROM `customer_order` where status = 1 and store_id = %s"
-#     param = [store_id]
-#     cursor.execute(sql,param)
-#     return cursor.fetchall()
+def get_store_self_order_list(store_id) :
+    sql = "SELECT * FROM `customer_order` where status = 1 and store_id = %s"
+    param = [store_id]
+    cursor.execute(sql,param)
+    return cursor.fetchall()
 
 def get_store_self_order_list(id) : # 三張表組合
     sql = """
@@ -129,6 +118,9 @@ def meal_status_complete(id) :
     conn.commit()
     return    
 
+
+
+
 def get_all_users() : # get infom from user 
     sql = "SELECT * FROM `user`"
     cursor.execute(sql,)
@@ -149,7 +141,7 @@ def get_price(id) : # "新" 三張表組合 ， 為了 order_id
 
 
 
-def edit_sumry(cid,sid,did,price) :
+def edit_sumry(cid,sid,did,price) : 
     sql = """
         UPDATE `user` 
         inner join store on user.id = store.uid
@@ -183,7 +175,20 @@ def edit_sumry(cid,sid,did,price) :
     conn.commit()
     return
     
-# ====
+
+
+
+# get
+def get_store_list() : # 商店清單(給顧客)
+    sql = "SELECT * FROM `store`"
+    cursor.execute(sql)
+    return cursor.fetchall()
+
+def get_store_menu(sid) : # 商店的菜單
+    sql = "SELECT * FROM `store_menu` where sid = %s"
+    param = [sid]
+    cursor.execute(sql,param)
+    return cursor.fetchall()
 
 def get_customer_id(id) : # 顧客的 ID ，點餐用
     sql = "SELECT id FROM `customer` where uid = %s"
@@ -216,6 +221,7 @@ def get_customer_order(order_menu_id) : # 待送訂單的詳細，送貨員接�
     print(param)
     cursor.execute(sql, param)
     return cursor.fetchall()
+
 def get_order(sid): # 列出店家的訂單
     sql = """
         SELECT customer.name, delivery.name, store_menu.name, customer_order.destination 

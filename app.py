@@ -161,7 +161,7 @@ def api_store_order(store_id):
     # 查找 store menu 找對應餐點的 id
     order_id = dbUtils.get_menu_order(order)['id']
     # 再寫入 order_menu 中
-    add_order = dbUtils.add_order_menu(order_id, customer_order_id)
+    dbUtils.add_order_menu(order_id, customer_order_id)
     return {"data": customer_order_id}
 
 #================================================
@@ -194,11 +194,11 @@ def api_customer_order(order_menu_id):
     
     return {"data": customer_order}
 
-# @app.route('/order-list/<string:order_menu_id>', methods=['POST']) # 接單（送貨員）
-# def api_customer_delivery(order_menu_id):
-#     delivery_id = dbUtils.get_delivery_id(session['id'])[0]["id"]
-#     customer_delivery = dbUtils.edit_customer_delivery(delivery_id, order_menu_id)
-#     return {"data": customer_delivery}
+@app.route('/order-list/<string:order_menu_id>', methods=['POST']) # 接單（送貨員）
+def api_customer_delivery(order_menu_id):
+    delivery_id = dbUtils.get_delivery_id(session['id'])[0]["id"]
+    customer_delivery = dbUtils.edit_customer_delivery(delivery_id, order_menu_id)
+    return {"data": customer_delivery}
 
 
 #================================================
@@ -239,7 +239,7 @@ def api_complete_status():
 def vmenu():
     sid = dbUtils.get_store_id(session['id'])[0]["id"]
     data = dbUtils.store_own_list(sid)
-    order = dbUtils.get_o
+    order = dbUtils.get_order()
     return render_template('/menu.html', data=data, sid=sid)
 
 
