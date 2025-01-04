@@ -310,7 +310,7 @@ def get_menu_order(order): # 找到餐點的 ID，點餐用（要加進 order_me
     cursor.execute(sql, param)
     return cursor.fetchone()
 
-def get_delivery_order_list(delivery_id): # 找到外送員已接的訂單（目的地、客戶姓名、商店、餐點內容）
+def get_delivery_order_list(delivery_id): # 找到外送員已接的訂單（目的地、客戶姓名、商店、餐點內容） ##
     sql = """
         SELECT customer.name, customer_order.status, customer_order.id, store_menu.name as order_name, store.name as store, customer_order.quantity, store_menu.price, customer_order.destination, customer_order.quantity*store_menu.price as total 
         FROM order_menu
@@ -318,7 +318,7 @@ def get_delivery_order_list(delivery_id): # 找到外送員已接的訂單（目
         inner join store_menu on order_menu.menu_id = store_menu.id
         inner join store on store_menu.sid = store.id
         inner join customer on customer.id = customer_order.customer_id
-        WHERE customer_order.delivery_id = %s
+        WHERE customer_order.delivery_id = %s and customer_order.status = 2
         """
     param = [delivery_id]
     cursor.execute(sql, param)

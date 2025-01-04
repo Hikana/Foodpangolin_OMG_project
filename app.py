@@ -200,8 +200,8 @@ def delivery_order():
         form = request.form
         order_id = form['order_id']
         status = 3
-        dbUtils.edit_customer_delivery(delivery_id, status, order_id)
-        return redirect('/delivery')
+        dbUtils.edit_customer_delivery(delivery_id, status, order_id) # 已送達更改狀態
+        return redirect('/delivery-order')
     return render_template('delivery_order.html', order=delivery_list)
 
 
