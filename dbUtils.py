@@ -89,23 +89,23 @@ def store_own_list(id) : # 店家自己的菜單
 
 
 
-def get_store_self_order_list(store_id) :
-    sql = "SELECT * FROM `customer_order` where status = 1 and store_id = %s"
-    param = [store_id]
-    cursor.execute(sql,param)
-    return cursor.fetchall()
+# def get_store_self_order_list(store_id) :
+#     sql = "SELECT * FROM `customer_order` where status = 1 and store_id = %s"
+#     param = [store_id]
+#     cursor.execute(sql,param)
+#     return cursor.fetchall()
 
-def get_store_self_order_list(id) : # 三張表組合
-    sql = """
-        SELECT *
-        FROM `customer_order` 
-        inner join `order_menu` on customer_order.id = order_menu.customer_order_id
-        inner join `store_menu` on store_menu.id = order_menu.menu_id
-        WHERE customer_order.status = 1 and store_id= %s
-    """
-    param = [id]
-    cursor.execute(sql,param)
-    return cursor.fetchall()
+# def get_store_self_order_list(id) : # 三張表組合
+#     sql = """
+#         SELECT *
+#         FROM `customer_order` 
+#         inner join `order_menu` on customer_order.id = order_menu.customer_order_id
+#         inner join `store_menu` on store_menu.id = order_menu.menu_id
+#         WHERE customer_order.status = 1 and store_id= %s
+#     """
+#     param = [id]
+#     cursor.execute(sql,param)
+#     return cursor.fetchall()
 
 def meal_status_complete(id) :
     sql = """
@@ -224,6 +224,9 @@ def get_menu(id) : # 看菜單詳細 ##
     cursor.execute(sql, param)
     return cursor.fetchall()
 
+
+
+
 # 送貨員
 def get_delivery_id(id) : # 送貨員 ID ，接單用 ##
     sql = "SELECT id FROM `delivery` where uid = %s"
@@ -231,20 +234,47 @@ def get_delivery_id(id) : # 送貨員 ID ，接單用 ##
     cursor.execute(sql,param)
     return cursor.fetchall()
 
-
-def get_customer_order(order_menu_id) : # 待送訂單的詳細，送貨員接單用
+def get_available_order() : # 找到還沒被接的訂單，送貨員首頁用 ##
     sql = """
-        SELECT cus_o.status, cus_o.id, str_m.name as "order", s.name as "store", str_m.price, cus_o.destination 
-        FROM order_menu as odr_m 
-        inner join customer_order as cus_o on odr_m.customer_order_id = cus_o.id
-        inner join store_menu as str_m on odr_m.menu_id = str_m.id
-        inner join store as s on str_m.sid = s.id
-        WHERE cus_o.id = %s
+        SELECT customer_order.status, customer_order.id, store_menu.name as order_name, store.name as store, customer_order.quantity, store_menu.price, customer_order.destination, customer_order.quantity*store_menu.price as total 
+        FROM order_menu
+        inner join customer_order on order_menu.customer_order_id = customer_order.id
+        inner join store_menu on order_menu.menu_id = store_menu.id
+        inner join store on store_menu.sid = store.id
+        WHERE customer_order.status = %s
     """
-    param = [order_menu_id]
-    print(param)
-    cursor.execute(sql, param)
+    param = [1] # 1: 待運送, 2: 運送中, 3: 已送達 (可再調整代碼)
+    cursor.execute(sql,param)
+    
     return cursor.fetchall()
+
+# def get_available_order() : # 找到還沒被接的訂單，送貨員首頁用 ##
+#     sql = """
+#         SELECT customer_order.status, customer_order.id, store_menu.name as order_name, store.name as store, customer_order.quantity, store_menu.price, customer_order.destination, customer_order.quantity*store_menu.price as total 
+#         FROM order_menu
+#         inner join customer_order on order_menu.customer_order_id = customer_order.id
+#         inner join store_menu on order_menu.menu_id = store_menu.id
+#         inner join store on store_menu.sid = store.id
+#         WHERE customer_order.status = %s
+#     """
+#     param = [1] # 1: 待運送, 2: 運送中, 3: 已送達 (可再調整代碼)
+#     cursor.execute(sql,param)
+    
+#     return cursor.fetchall()
+
+# def get_customer_order(order_menu_id) : # 待送訂單的詳細，送貨員接單用
+#     sql = """
+#         SELECT customer_order.status, customer_order.id, store_menu.name as order_name, store.name as store, customer_order.quantity, store_menu.price, customer_order.destination, customer_order.quantity*store_menu.price as total 
+#         FROM order_menu
+#         inner join customer_order on order_menu.customer_order_id = customer_order.id
+#         inner join store_menu on order_menu.menu_id = store_menu.id
+#         inner join store on store_menu.sid = store.id
+#         WHERE customer_order.id = %s
+#     """
+#     param = [order_menu_id]
+#     print(param)
+#     cursor.execute(sql, param)
+#     return cursor.fetchall()
 
 def get_store_id(id) : # 商店 ID ，新增菜單用 ##
     sql = "SELECT id FROM `store` where uid = %s"
@@ -267,25 +297,12 @@ def get_order(sid): # 列出店家的訂單
     cursor.execute(sql, param)
     return cursor.fetchall()
 
-def get_customer_all_order(order_menu_id) : # 拿到所有用戶的 ID
-    sql =  "SELECT customer_id, store_id, delivery_id FROM customer_order where id = %s"
-    cursor.execute(sql, (order_menu_id,))
-    return cursor.fetchall()
+# def get_customer_all_order(order_menu_id) : # 拿到所有用戶的 ID
+#     sql =  "SELECT customer_id, store_id, delivery_id FROM customer_order where id = %s"
+#     cursor.execute(sql, (order_menu_id,))
+#     return cursor.fetchall()
 
 
-def get_available_order() : # 找到還沒被接的訂單，送貨員首頁用
-    sql = """
-        SELECT cus_o.id as id, str_m.name, s.name, str_m.price, cus_o.destination
-        FROM `order_menu` as odr_m 
-        inner join `customer_order` as cus_o on odr_m.customer_order_id = cus_o.id
-        inner join `store_menu` as str_m on odr_m.menu_id = str_m.id
-        inner join `store` as s on str_m.sid = s.id
-        WHERE cus_o.status = 1 or cus_o.status = 3
-    """
-    # param = [1] # 1 : 待運送, 2: 運送中, 3: 已送達 (可再調整代碼)
-    cursor.execute(sql)
-    
-    return cursor.fetchall()
 
 def get_menu_order(order): # 找到餐點的 ID，點餐用（要加進 order_menu）
     sql = "SELECT `id` FROM `store_menu` WHERE name = %s"
@@ -295,12 +312,12 @@ def get_menu_order(order): # 找到餐點的 ID，點餐用（要加進 order_me
 
 def get_delivery_order_list(delivery_id): # 找到外送員已接的訂單（目的地、客戶姓名、商店、餐點內容）
     sql = """
-        SELECT customer_order.status, customer_order.destination, customer.name, store.name, store_menu.name 
-        FROM `customer_order`
-        INNER JOIN `customer` ON customer.id = customer_order.customer_id
-        INNER JOIN `store` ON store.id = customer_order.store_id
-        INNER JOIN `order_menu` ON customer_order.id = order_menu.customer_order_id
-        INNER JOIN `store_menu` ON order_menu.menu_id = store_menu.id
+        SELECT customer.name, customer_order.status, customer_order.id, store_menu.name as order_name, store.name as store, customer_order.quantity, store_menu.price, customer_order.destination, customer_order.quantity*store_menu.price as total 
+        FROM order_menu
+        inner join customer_order on order_menu.customer_order_id = customer_order.id
+        inner join store_menu on order_menu.menu_id = store_menu.id
+        inner join store on store_menu.sid = store.id
+        inner join customer on customer.id = customer_order.customer_id
         WHERE customer_order.delivery_id = %s
         """
     param = [delivery_id]
@@ -311,13 +328,15 @@ def get_delivery_order_list(delivery_id): # 找到外送員已接的訂單（目
 
 
 # add
+
+# 顧客
 def add_customer_order(id, store_id, quantity, destination) : # 顧客點餐 ##
     sql = """
     INSERT INTO
       `customer_order`
       (`customer_id`, `store_id`, `quantity`, `delivery_id`, `destination`,`status`) 
       VALUES ( %s,%s,%s,%s,%s,%s)"""
-    param = [id,store_id,quantity,str(-1),destination,str(0)]
+    param = [id,store_id,quantity,str(-1),destination,str(1)]
     print(param)
     cursor.execute(sql,param)
     conn.commit()
@@ -364,7 +383,7 @@ def edit_store_menu(store_id):
     conn.commit()
     return
 
-def edit_customer_delivery(delivery_id,order_menu_id,status) : # 接單後把 delivery_id 的 -1 改成送貨員的 ID / 加上 status 更改
+def edit_customer_delivery(delivery_id, status, order_menu_id) : # 接單後把 delivery_id 的 -1 改成送貨員的 ID / 加上 status 更改
     sql = """
         UPDATE `customer_order` 
         inner join `order_menu` on order_menu.customer_order_id = customer_order.id

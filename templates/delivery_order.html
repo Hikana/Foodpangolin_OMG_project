@@ -7,60 +7,41 @@
     <title>Document</title>
   </head>
   <body>
-    <div class="container">
-      <div class="row">
-        <h1 class="text-center">This 點餐外送平台 for delivery</h1>
-      </div>
-      <table border="1">
-        <thead>
-          <tr>
-            <th>id</th>
-            <th>Order</th>
-            <th>Store</th>
-            <th>Price</th>
-            <th>Destination</th>
-          </tr>
-        </thead>
-        <tbody>
-          {%if data != []%}
-          <tr>
-            <td>{{ data[0].id }}</td>
-            <td>{{ data[0].order }}</td>
-            <td>{{ data[0].store }}</td>
-            <td>{{ data[0].price }}</td>
-            <td>{{ data[0].destination }}</td>
-          </tr>
-          {%endif%}
-        </tbody>
-      </table>
-      <div>
-        {%if data != []%}
-        <div class="col-2 d-flex flex-column align-items-center">
-          {%if data[0].status == 1%}
-          <form action="/order-list/{{ data[0].id }}">
-            <button type="submit" name="change_status" value="3">接單</button>
-          </form>
-          {%elif data[0].status == 3%}
-          <form action="/order-list/{{ data[0].id }}">
-            <button type="submit" name="change_status" value="4">簽收</button>
-          </form>
-          {%endif%}
-          
-        </div>
-        {%endif%}
-      </div>
-      <!-- 顯示可接訂單的列表
-      <div class="row">
-        <div class="col-6 m-auto">
-          <div class="order-list row">
-            
-          </div>
+    <h1>我的訂單</h1>
+    
+    <form action="/delivery-order" method="post">
+    <table border="1">
+      <tr>
+        <th>訂單編號</th>
+        <th>店家</th>
+        <th>訂單內容</th>
+        <th>單價</th>
+        <th>數量</th>
+        <th>總價</th>
+        <th>客戶姓名</th>
+        <th>目的地</th>
+        <th>狀態</th>
+        <th>操作</th>
+      </tr>
+      {%for o in order%}
+      <tr>
+        <td>{{ o.id }}</td>
+        <td>{{ o.store }}</td>
+        <td>{{ o.order_name }}</td>
+        <td>{{ o.price }}</td>
+        <td>{{ o.quantity }}</td>
+        <td>{{ o.total }}</td>
+        <td>{{ o.name }}</td>
+        <td>{{ o.destination }}</td>
+        <td>{{ o.status }}</td>
+        <td>
+          <button type="submit">已送達</button>
+        </td>
+        <input type="hidden" name="order_id" value="{{o.id}}">
+        {%endfor%}
+      </tr>
+    </form>
 
-        </div>
-      </div>
-    </div> -->
-
-    {% include "models/bs_js.html" %}
-    <!-- <script src="/static/javascripts/delivery.js"></script> -->
+    </table>
   </body>
 </html>
