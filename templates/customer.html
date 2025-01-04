@@ -8,6 +8,34 @@
 <body>
   <form action="/customer" method="get"></form>
   <h1 class="text-center">嗨！今天想點什麼呢？</h1>
+
+  <table border="1">
+    <tr>
+      <th>時間</th>
+      <th>店家</th>
+      <th>品項</th>
+      <th>數量</th>
+      <th>送貨員</th>
+      <th>訂單狀態</th>
+      <th>應付</th>
+      <th>操作</th>
+
+    </tr>
+    {%for o in order%}
+    <tr>
+      <td>{{ o.time }}</td>
+      <td>{{ o.s_name }}</td>
+      <td>{{ o.m_name }}</td>
+      <td>{{ o.quantity }}</td>
+      <td>{{ o.d_name }}</td>
+      <td>{{ o.status }}</td>
+      <td>{{ o.total }}</td>
+      <td><button>確認收貨</button></td>
+    </tr>
+    {%endfor%}
+  </table>
+
+
   <table border="1">
     <tr>
       <th>店家</th>

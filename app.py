@@ -130,8 +130,10 @@ def api_login():
 @login_required
 @role_check
 def api_store_list():
+    customer_id = dbUtils.get_customer_id(session['id'])[0]["id"]
+    print("-------------------------------", customer_id)
     store_list = dbUtils.get_store_list()
-    order_list = dbUtils.get_customer_order()
+    order_list = dbUtils.get_customer_self_order(customer_id)
     return render_template('customer.html',data=store_list,order=order_list)
 
 
