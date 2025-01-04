@@ -61,13 +61,6 @@ def login():
 
 
 #================================================
-# @app.route('/store', methods=['GET'])  # 店家首頁
-# @login_required
-# @role_check
-# def store():
-#     data = dbUtils.get_store_self_order_list(session['id'])
-#     print(session['id'])
-#     return render_template('store.html',data = data, sid=session['id'])
 
 
 
@@ -125,7 +118,7 @@ def api_login():
 @role_check
 def api_store_list():
     customer_id = dbUtils.get_customer_id(session['id'])[0]["id"]
-    print("-------------------------------", customer_id)
+    print(customer_id)
     store_list = dbUtils.get_store_list()
     order_list = dbUtils.get_customer_self_order(customer_id)
     return render_template('customer.html',data=store_list,order=order_list)
@@ -193,7 +186,6 @@ def delivery():
 @login_required
 @role_check
 def delivery_order():
-    # order_list = dbUtils.get_available_order() # 可以接的訂單
     delivery_id = dbUtils.get_delivery_id(session['id'])[0]["id"]
     delivery_list = dbUtils.get_delivery_order_list(delivery_id) # 已經接的訂單
     if request.method == 'POST':
@@ -203,6 +195,25 @@ def delivery_order():
         dbUtils.edit_customer_delivery(delivery_id, status, order_id) # 已送達更改狀態
         return redirect('/delivery-order')
     return render_template('delivery_order.html', order=delivery_list)
+
+
+
+
+
+# 店家頁面
+@app.route('/store', methods=['GET'])  # 店家首頁
+@login_required
+@role_check
+def store():
+    store_id = dbUtils.get_store_id(session['id'])[0]["id"]
+    data = dbUtils.get_store_self_order_list(store_id)
+    print(session['id'])
+    return render_template('store.html',data = data)
+
+
+
+
+
 
 
 # @app.route('/order-list', methods=['GET']) # 待送清單跟已接訂單（送貨員）

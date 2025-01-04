@@ -1,49 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {% include "models/bs_css.html" %}
-    <title>Document</title>
-</head>
-<body>
-    <div class="container">
-        <div class="row">
-            <h1 class="text-center">This 點餐外送平台 for store</h1>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+    </head>
+    <body>
+        <div class="container">
+            <div class="row">
+                <h1 class="text-center">This is 點餐外送平台 for store</h1>
+                <a href="/view_menu">菜單列表</a>
             <main>
 
                 <h1>餐廳名稱</h1>
                 <p>地點：這裡是商家的地點。</p>
                 <p>簡介：這裡是商家的描述。</p>
-                <p>練絡方式：這裡是商家的聯絡方式。</p>
+                <p>聯絡方式：這裡是商家的聯絡方式。</p>
                 
-                {{ data }}
 
                 <section id="menu">
-                    <h2>菜單</h2>
+                    <h2>我的訂單</h2>
                     <table border="1">
                         <tr>
-                            <th>菜名</th>
-                            <th>價格</th>
-                            <th>簡介</th>
+                            <th>訂單編號</th>
+                            <th>內容</th>
+                            <th>單價</th>
+                            <th>點餐時間</th>
+                            <th>數量</th>
+                            <th>總價</th>
+                            <th>目的地</th>
                             <th>操作</th>
                         </tr>
                         <!-- 範例 -->
                          {%for rec in data%}
                         <tr>
-                            <td>{{ rec.name }}</td>
+                            <td>{{ rec.id }}</td>
+                            <td>{{ rec.m_name }}</td>
                             <td>{{ rec.price }}</td>
-                            <td>{{ rec.intro }}</td>
-                            <td><a href="/menu-order-complete?id={{ rec.customer_order_id }}">完成</a></td>
+                            <td>{{ rec.time }}</td>
+                            <td>{{ rec.quantity}}</td>
+                            <td>{{ rec.total }}</td>
+                            <td>{{ rec.destination }}</td>
+                            <td><a href="/menu-order-complete?id={{ rec.customer_order_id }}">訂單完成</a></td>
                         </tr>
                         {%endfor%}
                     </table>
                 </section>
             </main>
         </div>
-        <a href="/view_menu">菜單列表</a>
     </div>
     
-    {% include "models/bs_js.html" %}
 </body>
 </html>
