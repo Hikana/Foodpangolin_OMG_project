@@ -12,13 +12,19 @@
     <tr>
       <th>店家</th>
       <th>說明</th>
+      <th>地址</th>
       <th>操作</th>
     </tr>
-
+    {% for s in data %}
     <tr>
-      {% for }
-      <td></td>
+      <td>{{ s.name }}</td>
+      <td>{{ s.intro }}</td>
+      <td>{{ s.location }}</td>
+      <td>
+        <a href="/store-menu?store_id={{s.id}}"><button>看菜單</button></a>
+      </td>
     </tr>
+    {%endfor%}
   </table>
 
 </body>

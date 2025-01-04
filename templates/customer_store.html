@@ -3,31 +3,30 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {% include "models/bs_css.html" %}
-    <link rel="stylesheet" href="/static/stylesheets/customer.css">
     <title>Document</title>
   </head>
   <body>
 
-    <div class="container">
-      <div class="row">
-        <h1 class="text-center">This 點餐外送平台 for customer</h1>
-      </div>
-    </div>
+    <h1 class="text-center">點餐</h1>
+  <table border="1">
+    <tr>
+      <th>品項名稱</th>
+      <th>說明</th>
+      <th>價格</th>
+      <th>操作</th>
+    </tr>
+    {% for s in data %}
+    <tr>
+      <td>{{ s.name }}</td>
+      <td>{{ s.intro }}</td>
+      <td>{{ s.price }}</td>
+      <td>
+        <a href="/order?menu_id={{s.id}}"><button>點餐</button></a>
+      </td>
+    </tr>
+    {%endfor%}
+    <a href="/store-menu"><button>取消 / 回前頁</button></a>
     
 
-    <!-- 顯示菜單列表 -->
-    <div class="row">
-      <div class="col-6 m-auto">
-        <div class="menu-list row">
-    
-        </div>
-
-      </div>
-    </div>
-    
-
-    {% include "models/bs_js.html" %}
-    <script src="/static/javascripts/customer_store.js"></script>
   </body>
 </html>

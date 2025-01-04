@@ -86,13 +86,13 @@ def platform():
     print(session['id'])
     return render_template('platform.html',data = data)
 #================================================
-@app.route('/customer/store/<int:store_id>', methods=['GET']) 
-@login_required
-@role_check
-def customer_stroe(store_id):
-    print(store_id)
+# @app.route('/customer/store/<int:store_id>', methods=['GET']) 
+# @login_required
+# @role_check
+# def customer_stroe(store_id):
+#     print(store_id)
     
-    return render_template('customer_store.html')
+#     return render_template('customer_store.html')
 
 @app.route('/delivery/order/<int:order_id>', methods=['GET']) 
 @login_required
@@ -126,40 +126,53 @@ def api_login():
 
 #================================================
 # 顧客頁面
-@app.route('/customer', methods=['GET']) # 客戶首頁
+@app.route('/customer', methods=['GET']) # 客戶首頁 ##
 @login_required
 @role_check
 def api_store_list():
     store_list = dbUtils.get_store_list()
-    return {"data": store_list}
+    order_list = dbUtils.get_customer_order()
+    return render_template('customer.html',data=store_list,order=order_list)
 
-@app.route('/store-list', methods=['GET']) # 列出商店資訊（顧客）
 
-@app.route('/store-list/<int:store_id>/menu', methods=['GET']) # 列出選取商店的菜單（顧客）
-def api_store_menu(store_id):
+@app.route('/store-menu', methods=['GET']) # 列出選取商店的菜單（顧客） ##
+def api_store_menu():
+    store_id = request.args['store_id']
     store_menu = dbUtils.get_store_menu(store_id)
-    return {"data": store_menu}
+    return render_template('customer_store.html', data=store_menu)
 
-@app.route('/store-list/<int:store_id>/order', methods=['POST']) # 顧客點餐（顧客）
-def api_store_order(store_id):
+@app.route('/order', methods=['POST','GET']) # 顧客點餐，一次一個餐點（顧客） ##
+def api_store_order():
     # 品項、數量、單價、目的地
     # 先撈出 customer_id
-    customer_id = dbUtils.get_customer_id(session['id'])[0]["id"]
     
-    # 從 request 取得 destination 放入 customer_order
-    form = request.json
-    destination = form.get('order')[0]["destination"]
-    order = form.get('order')[0]["name"]    
-    # 再寫入 customer_order
+    if request.method == 'GET':
+        menu_id = request.args['menu_id']
+        store_menu = dbUtils.get_menu(menu_id)
+        
+    if request.method == 'POST':
+        menu_id = request.form['menu_id']
+        store_menu = dbUtils.get_menu(menu_id)
+        form = request.form 
+        customer_id = dbUtils.get_customer_id(session['id'])[0]["id"]
+        # 從 request 取得 destination 放入 customer_order
+        
+        destination = form['destination']
+        order = form['order']   
+        quantity = form['quantity']
+        store_id = form['store_id']
 
-    # 取得剛寫入的 customer_order 資料的 id
-    customer_order_id = dbUtils.add_customer_order(customer_id, store_id, destination)
-    # 還有整理從 request 取得的訂單內容
-    # 查找 store menu 找對應餐點的 id
-    order_id = dbUtils.get_menu_order(order)['id']
-    # 再寫入 order_menu 中
-    dbUtils.add_order_menu(order_id, customer_order_id)
-    return {"data": customer_order_id}
+        # 再寫入 customer_order
+
+        # 取得剛寫入的 customer_order 資料的 id
+        customer_order_id = dbUtils.add_customer_order(customer_id, store_id, quantity,  destination)
+        # 還有整理從 request 取得的訂單內容
+        # 查找 store menu 找對應餐點的 id
+        order_id = dbUtils.get_menu_order(order)['id']
+        # 再寫入 order_menu 中
+        dbUtils.add_order_menu(order_id, customer_order_id)
+        return redirect(f'/store-menu?store_id={store_id}')
+    return render_template('customer_order.html', data=store_menu, menu_id=menu_id)
 
 #================================================
 # 送貨員頁面
@@ -231,7 +244,7 @@ def api_complete_status():
 
 
 #---------------------------------------------------------------------------------------------------------------
-# 新增路由
+# 新增路由 菜單編輯跟刪除
 @app.route('/view_menu',methods=['GET']) #查看菜單
 def vmenu():
     sid = dbUtils.get_store_id(session['id'])[0]["id"]

@@ -179,16 +179,26 @@ def edit_sumry(cid,sid,did,price) :
 
 
 # get
-def get_store_list() : # 商店清單(給顧客)
-    sql = "SELECT * FROM `store`"
+def get_store_list() : # 商店清單(給顧客) ##
+    sql = "SELECT id, name, intro, location FROM `store`"
     cursor.execute(sql)
     return cursor.fetchall()
 
-def get_store_menu(sid) : # 商店的菜單
-    sql = "SELECT * FROM `store_menu` where sid = %s"
+def get_store_menu(sid) : # 商店的菜單 ##
+    sql = "SELECT id, name, intro, price FROM `store_menu` where sid = %s"
     param = [sid]
     cursor.execute(sql,param)
     return cursor.fetchall()
+
+def get_customer_order() :
+    sql = "select "
+
+def get_menu(id) : # 看菜單詳細 ##
+    sql = "select sid, name, price, intro from `store_menu` where id = %s"
+    param = [id]
+    cursor.execute(sql, param)
+    return cursor.fetchall()
+
 
 def get_customer_id(id) : # 顧客的 ID ，點餐用
     sql = "SELECT id FROM `customer` where uid = %s"
@@ -281,13 +291,14 @@ def get_delivery_order_list(delivery_id): # 找到外送員已接的訂單（目
 
 
 # add
-def add_customer_order(id, store_id, destination) :
+def add_customer_order(id, store_id, quantity, destination) :
     sql = """
     INSERT INTO
       `customer_order`
-      (`customer_id`, `store_id`, `delivery_id`, `destination`,`status`) 
-      VALUES ( %s,%s,%s,%s,%s)"""
-    param = (id,store_id,str(-1),destination,str(1))
+      (`customer_id`, `store_id`, `quantity`, `delivery_id`, `destination`,`status`) 
+      VALUES ( %s,%s,%s,%s,%s,%s)"""
+    param = [id,store_id,quantity,str(-1),destination,str(0)]
+    print(param)
     cursor.execute(sql,param)
     conn.commit()
     customer_id = cursor.lastrowid

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>點餐系統</title>
+</head>
+<body>
+    <h1>點餐系統</h1>
+    
+    <form action="/order" method="POST">
+        <!-- 顯示商店名稱 -->
+        <h2>菜單</h2>
+        <table border="1">
+            <tr>
+                <th>品項名稱</th>
+                <th>說明</th>
+                <th>價格</th>
+                <th>數量</th>
+            </tr>
+            {% for item in data %}
+            <tr>            
+                <td>{{ item.name }}</td>
+                <td>{{ item.intro }}</td>
+                <td>{{ item.price }}</td>
+                <td>
+                    <!-- 填寫數量 -->
+                    <input type="number" name="quantity" min="1">
+                </td>
+                <!-- 隱藏的 input 傳遞品項名稱 -->
+                <input type="hidden" name="order" value="{{ item.name }}">                
+                <input type="hidden" name="store_id" value="{{ item.sid }}">
+            </tr>
+            {% endfor %}
+        </table>
+        
+        <br>
+        
+        <label for="destination">送餐地址：</label>
+        <input type="text" id="destination" name="destination" placeholder="請輸入地址" required>
+        <br><br>
+        <input type="hidden" name = "menu_id" value = "{{menu_id}}">
+
+        <button type="submit">提交訂單</button>
+    </form>
+
+    <a href="/store-menu?store_id={{data[0].sid}}"><button>取消 / 回前頁</button></a>
+</body>
+</html>
