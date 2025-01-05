@@ -1,3 +1,5 @@
-pip install mysql-connector
-pip install Flask
-pip install bcrypt
+組別 9：
+111213027 周聖倫
+111213040 薛素芬
+111213006 連哲寬
+111213034 孫睿君
