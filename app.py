@@ -88,19 +88,19 @@ def api_login():
     return redirect('/login')
 
 #================================================
-# 顧客頁面
+# 客戶頁面
 @app.route('/customer', methods=['POST','GET']) # 客戶首頁 ##
 @login_required
 @role_check
 def api_store_list():
     customer_id = dbUtils.get_customer_id(session['id'])[0]["id"]
-    print(customer_id)
-    store_list = dbUtils.get_store_list()
-    order_list = dbUtils.get_customer_self_order(customer_id) # 顧客點的菜
     if request.method == 'POST':
         form = request.form
         oid = form['oid']
+        print("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\",oid)
         dbUtils.edit_customer_order(oid)
+    store_list = dbUtils.get_store_list()
+    order_list = dbUtils.get_customer_self_order(customer_id) # 顧客點的菜
     return render_template('customer.html',data=store_list,order=order_list)
 
 
@@ -134,7 +134,7 @@ def api_store_order():
         # 再寫入 customer_order
 
         # 取得剛寫入的 customer_order 資料的 id
-        customer_order_id = dbUtils.add_customer_order(customer_id, store_id, quantity,  destination)
+        customer_order_id = dbUtils.add_customer_order(customer_id, store_id, quantity, destination)
         # 還有整理從 request 取得的訂單內容
         # 查找 store menu 找對應餐點的 id
         order_id = dbUtils.get_menu_order(order)['id']
@@ -143,7 +143,11 @@ def api_store_order():
         return redirect(f'/store-menu?store_id={store_id}')
     return render_template('customer_order.html', data=store_menu, menu_id=menu_id)
 
-
+@app.route('/customer_comment', methods=['GET']) # 顧客評價
+def add_store_comment():
+    customer_id = dbUtils.get_customer_id(session['id'])[0]["id"]
+    order_list = dbUtils.get_customer_self_order(customer_id) # 顧客點的菜
+    return render_template('/customer_comment.html', order_list=order_list)
 
 
 

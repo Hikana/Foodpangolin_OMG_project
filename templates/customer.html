@@ -1,62 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-</head>
-<body>
-  <h1 class="text-center">嗨！今天想點什麼呢？</h1>
-  <p>我的訂單</p>
-  <a href="/evaluate"><button>我的評價</button></a>
-  <form action="/customer" method="POST">
-  <table border="1">
-    <tr>
-      <th>時間</th>
-      <th>店家</th>
-      <th>品項</th>
-      <th>數量</th>
-      <th>送貨員</th>
-      <th>訂單狀態</th>
-      <th>應付</th>
-      <th>操作</th>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+  </head>
+  <body>
+    <h1 class="text-center">嗨！今天想點什麼呢？</h1>
+    <p>我的訂單</p>
+    <a href="/comment"><button>我的評價</button></a>
+    <table border="1">
+      <tr>
+        <th>時間</th>
+        <th>店家</th>
+        <th>品項</th>
+        <th>數量</th>
+        <th>送貨員</th>
+        <th>訂單狀態</th>
+        <th>應付</th>
+        <th>操作</th>
 
-    </tr>
-    {%for o in order%}
-    <tr>
-      <td>{{ o.time }}</td>
-      <td>{{ o.s_name }}</td>
-      <td>{{ o.m_name }}</td>
-      <td>{{ o.quantity }}</td>
-      <td>{{ o.d_name }}</td>
-      <td>{{ o.status }}</td>
-      <td>{{ o.total }}</td>
-      <td><button type="submit">確認收貨</button></td>
-      <input type="hidden" name="oid" value="{{o.id}}">
-    </tr>
-    {%endfor%}
-  </table>
-  </form>
+      </tr>
+      {%for o in order%}
+      <form action="/customer" method="POST">
+        <tr>
+          <td>{{ o.time }}</td>
+          <td>{{ o.s_name }}</td>
+          <td>{{ o.m_name }}</td>
+          <td>{{ o.quantity }}</td>
+          <td>{{ o.d_name }}</td>
+          <td>{{ o.status }}</td>
+          <td>{{ o.total }}</td>
+          <input type="hidden" name="oid" value="{{o.id}}">
+          {%if o.status == 3%}
+          <td><button type="submit">確認收貨</button></td>
+          {%endif%}
+        </tr>
+      </form>
+      {%endfor%}
+    </table>
 
-  <p>點餐</p>
-  <table border="1">
-    <tr>
-      <th>店家</th>
-      <th>說明</th>
-      <th>地址</th>
-      <th>操作</th>
-    </tr>
-    {% for s in data %}
-    <tr>
-      <td>{{ s.name }}</td>
-      <td>{{ s.intro }}</td>
-      <td>{{ s.location }}</td>
-      <td>
-        <a href="/store-menu?store_id={{s.id}}"><button>看菜單</button></a>
-      </td>
-    </tr>
-    {%endfor%}
-  </table>
+    <p>點餐</p>
+    <table border="1">
+      <tr>
+        <th>店家</th>
+        <th>說明</th>
+        <th>地址</th>
+        <th>操作</th>
+      </tr>
+      {% for s in data %}
+      <tr>
+        <td>{{ s.name }}</td>
+        <td>{{ s.intro }}</td>
+        <td>{{ s.location }}</td>
+        <td>
+          <a href="/store-menu?store_id={{s.id}}"><button>看菜單</button></a>
+        </td>
+      </tr>
+      {%endfor%}
+    </table>
 
-</body>
+  </body>
 </html>

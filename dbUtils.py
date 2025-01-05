@@ -62,7 +62,7 @@ def get_customer_self_order(customer_id) : # 顧客自己的訂單 ##
         `order_menu` ON order_menu.customer_order_id = customer_order.id
         INNER JOIN
         `store_menu` ON store_menu.id = order_menu.menu_id
-        WHERE customer_order.customer_id = %s
+        WHERE customer_order.customer_id = %s and customer_order.status != 4
         """
     param = [customer_id]
     cursor.execute(sql,param)
