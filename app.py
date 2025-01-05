@@ -97,7 +97,6 @@ def api_store_list():
     if request.method == 'POST':
         form = request.form
         oid = form['oid']
-        print("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\",oid)
         dbUtils.edit_customer_order(oid)
     store_list = dbUtils.get_store_list()
     order_list = dbUtils.get_customer_self_order(customer_id) # 顧客點的菜
@@ -143,11 +142,27 @@ def api_store_order():
         return redirect(f'/store-menu?store_id={store_id}')
     return render_template('customer_order.html', data=store_menu, menu_id=menu_id)
 
-@app.route('/customer_comment', methods=['GET']) # 顧客評價
-def add_store_comment():
+@app.route('/customer_comment', methods=['GET']) # 顧客可以評價的訂單
+def get_customer_finish_order():
     customer_id = dbUtils.get_customer_id(session['id'])[0]["id"]
-    order_list = dbUtils.get_customer_self_order(customer_id) # 顧客點的菜
-    return render_template('/customer_comment.html', order_list=order_list)
+    order = dbUtils.get_customer_finish_order(customer_id)
+    return render_template('customer_comment.html', order=order)
+
+@app.route('/order_comment', methods=['GET','POST']) # 顧客對訂單的評價
+def add_customer_comment():
+    if request.method =='POST':
+        form = request.form
+        order_id = form['oid']
+        comment = form['comment']
+        rating = form['rating']
+        dbUtils.add_customer_comment(order_id, rating, comment)
+        return redirect('/customer_comment')
+    order_id = request.args['oid']
+    order_intro = dbUtils.get_order_intro(order_id)
+    return render_template('/order_comment.html', data=order_intro)
+
+
+
 
 
 
@@ -225,6 +240,13 @@ def add_store_menu():
     return redirect('/view_menu')
 
 
+@app.route('/menu-order-complete',methods=['GET']) 
+def edit_status():
+    customer_order_id=request.args['id']
+    print(customer_order_id)
+    dbUtils.edit_status(customer_order_id)
+    return redirect('/store')
+
 
 
 @app.route('/fixfoodUI',methods=['POST', 'GET']) # 跳轉至修改菜單UI ##
@@ -253,6 +275,14 @@ def delet():
     dbUtils.dele_food(food_id)
     return redirect('/view_menu')
 
+
+@app.route('/platform', methods=['GET']) # 平台首頁
+@login_required
+@role_check
+def platform():
+    data = dbUtils.get_all_users()
+    print(session['id'])
+    return render_template('platform.html',data = data)
 
 
 

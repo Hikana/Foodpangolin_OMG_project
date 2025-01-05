@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+<h1>外送平台回饋表單</h1>
+<table>
+    <tr>
+        <th>店家</th>
+        <th>餐點內容</th>
+        <th>單價</th>
+        <th>數量</th>
+        <th>總和</th>
+        <th>外送員</th>
+    </tr>
+    {% for rec in data %}
+    <tr>
+        <td>{{rec.s_name}}</td>
+        <td>{{rec.o_name}}</td>
+        <td>{{rec.price}}</td>
+        <td>{{rec.quantity}}</td>
+        <td>{{rec.total}}</td>
+        <td>{{rec.d_name}}</td>
+    </tr>
+    {% endfor %}
+</table>
+ 
+
+
+<form action="/order_comment" method="POST">
+    <label for="rating">評分：</label>
+    <select id="rating" name="rating" required>
+        <option value="" disabled selected>請選擇評分</option>
+        <option value="5">5.非常非常滿意(/≧▽≦)/</option>
+        <option value="4">4.滿意(應該)</option>
+        <option value="3">3.普通呵呵</option>
+        <option value="2">2.有點不好吃</option>
+        <option value="1">1.這東西你敢拿出來賣(╬☉д⊙)</option>
+    </select>
+    <br><br>
+    <label for="feedback">回饋意見表：</label>
+    <textarea id="feedback" name="comment"  required></textarea>
+    <br><br>
+    <button type="submit">提交</button>
+    <input type="hidden" name="oid" value="o_id">
+</form>
+
+</body>
+</html>

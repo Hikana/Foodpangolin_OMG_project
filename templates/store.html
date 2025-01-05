@@ -13,8 +13,7 @@
                 <a href="/"></a>
             <main>
 
-         
-
+      
                 <section id="menu">
                     <h2>我的訂單</h2>
                     <table border="1">
@@ -38,12 +37,11 @@
                             <td>{{ rec.quantity}}</td>
                             <td>{{ rec.total }}</td>
                             <td>{{ rec.destination }}</td>
-                            <td><a href="/menu-order-complete?id={{ rec.customer_order_id }}"><button>訂單完成</button></a></td>
+                            <td><a href="/menu-order-complete?id={{ rec.id }}"><button>訂單完成</button></a></td>
                         </tr>
                         {%endfor%}
                     </table>
                 </section>
-                <form action=""></form>
             </main>
         </div>
     </div>

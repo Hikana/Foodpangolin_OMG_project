@@ -68,11 +68,37 @@ def get_customer_self_order(customer_id) : # 顧客自己的訂單 ##
     cursor.execute(sql,param)
     return cursor.fetchall()
 
+def get_menu_order(order): # 找到餐點的 ID，點餐用（要加進 order_menu）
+    sql = "SELECT `id` FROM `store_menu` WHERE name = %s"
+    param = [order]
+    cursor.execute(sql, param)
+    return cursor.fetchone()
+
 def get_menu(id) : # 看菜單詳細 ##
     sql = "select sid, name, price, intro from `store_menu` where id = %s"
     param = [id]
     cursor.execute(sql, param)
     return cursor.fetchall()
+
+def get_customer_finish_order(customer_id) : # 顧客已完成的訂單 ##
+    sql = """
+        select customer_order.id, customer_order.time, store.name as s_name, store_menu.name as m_name, customer_order.quantity, delivery.name as d_name, customer_order.quantity*store_menu.price as total, customer_order.status
+        from `customer_order`
+        INNER JOIN 
+        `store` ON store.id = customer_order.store_id
+        LEFT JOIN
+        `delivery` ON delivery.id = customer_order.delivery_id
+        INNER JOIN
+        `order_menu` ON order_menu.customer_order_id = customer_order.id
+        INNER JOIN
+        `store_menu` ON store_menu.id = order_menu.menu_id
+        WHERE customer_order.customer_id = %s and customer_order.status = 4
+        """
+    param = [customer_id]
+    cursor.execute(sql,param)
+    return cursor.fetchall()
+
+
 
 
 
@@ -111,6 +137,7 @@ def get_delivery_order_list(delivery_id): # 找到外送員已接的訂單（目
     param = [delivery_id]
     cursor.execute(sql, param)
     return cursor.fetchall()
+
 
 
 
@@ -174,6 +201,20 @@ def get_menu_intro(id) : # 挑出店家的某個品項內容 (修改用)
     cursor.execute(sql,param)
     return cursor.fetchone()
 
+def get_order_intro(order_id): # 顧客單一的點餐詳細
+    sql = """
+        SELECT co.id AS o_id, s.name AS s_name, sm.name AS o_name, sm.price , co.quantity , (sm.price * co.quantity) AS total, d.name AS d_name 
+        FROM customer_order co 
+        JOIN order_menu om ON co.id = om.customer_order_id 
+        JOIN store_menu sm ON om.menu_id = sm.id 
+        JOIN delivery d ON co.delivery_id = d.id 
+        JOIN store s ON co.store_id = s.id
+        WHERE co.id = %s;
+    """
+    param = [order_id]
+    cursor.execute(sql, param)
+    return cursor.fetchall()
+
 
 # add
 
@@ -191,6 +232,26 @@ def add_customer_order(id, store_id, quantity, destination) : # 顧客點餐 ##
     customer_id = cursor.lastrowid
     
     return customer_id
+
+def add_customer_comment(oid, comment, rating): # 新增顧客評論
+    sql = """
+    INSERT INTO `customer_comment`(`customer_order_id`, `comment`, `rating`) 
+    VALUES (%s,%s,%s)
+    """
+    param = [oid, comment, rating]
+    cursor.execute(sql,param)
+    conn.commit()
+    return
+
+def edit_status(customer_order_id): # 完成餐點
+    sql = """
+    UPDATE `customer_order` SET`status`=1 WHERE id=%s
+    """
+    param = [customer_order_id]
+    cursor.execute(sql,param)
+    conn.commit()
+    return
+
 
 
 # edit
@@ -220,18 +281,6 @@ def edit_customer_order(oid): # 顧客簽收
 
 #------------------------------------------------------------------------------------------------
 
-# def get_customer_all_order(order_menu_id) : # 拿到所有用戶的 ID
-#     sql =  "SELECT customer_id, store_id, delivery_id FROM customer_order where id = %s"
-#     cursor.execute(sql, (order_menu_id,))
-#     return cursor.fetchall()
-
-
-
-def get_menu_order(order): # 找到餐點的 ID，點餐用（要加進 order_menu）
-    sql = "SELECT `id` FROM `store_menu` WHERE name = %s"
-    param = [order]
-    cursor.execute(sql, param)
-    return cursor.fetchone()
 
 
 
@@ -240,7 +289,9 @@ def get_menu_order(order): # 找到餐點的 ID，點餐用（要加進 order_me
 
 
 
-def add_order_menu(menu_id, customer_order_id) :
+
+
+def add_order_menu(menu_id, customer_order_id) : # 把 id 加入 order_menu()
     sql = """
     INSERT INTO
       `order_menu`
@@ -379,10 +430,10 @@ def edit_sumry(cid,sid,did,price) :
 
 
 
-# def get_all_users() : # get infom from user 
-#     sql = "SELECT * FROM `user`"
-#     cursor.execute(sql,)
-#     return cursor.fetchall()
+def get_all_users() : # get infom from user 
+    sql = "SELECT * FROM `user`"
+    cursor.execute(sql,)
+    return cursor.fetchall()
 
 def get_price(id) : # "新" 三張表組合 ， 為了 order_id
     sql = """
