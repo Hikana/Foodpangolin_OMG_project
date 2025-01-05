@@ -9,7 +9,8 @@
         <div class="container">
             <div class="row">
                 <h1 class="text-center">This is 點餐外送平台 for store</h1>
-                <a href="/view_menu">菜單列表</a>
+                <a href="/view_menu"><button>菜單列表</button></a>
+                <a href="/"></a>
             <main>
 
                 <h1>餐廳名稱</h1>
@@ -41,11 +42,12 @@
                             <td>{{ rec.quantity}}</td>
                             <td>{{ rec.total }}</td>
                             <td>{{ rec.destination }}</td>
-                            <td><a href="/menu-order-complete?id={{ rec.customer_order_id }}">訂單完成</a></td>
+                            <td><a href="/menu-order-complete?id={{ rec.customer_order_id }}"><button>訂單完成</button></a></td>
                         </tr>
                         {%endfor%}
                     </table>
                 </section>
+                <form action=""></form>
             </main>
         </div>
     </div>

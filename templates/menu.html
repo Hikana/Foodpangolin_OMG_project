@@ -6,7 +6,7 @@
   <title>Document</title>
 </head>
 <body>
-<a href="/addfoodUI">新增菜色</a>
+<a href="/addfoodUI"><button>新增菜色</button></a>
 <table border="1">
   <tr>
       <th>菜名</th>
@@ -22,13 +22,13 @@
       <td>{{ rec.intro }}</td>
       <td>
         <a href="/fixfoodUI?food_id={{ rec.id }}"><button>修改</button></a>
-        <a href="/dele?food_id={{ rec.id }}" onclick="return confirmDelete();"><button>刪除</button></a>
+        <a href="/delet?food_id={{ rec.id }}" onclick="return confirmDelete();"><button>刪除</button></a>
       </td>
   </tr>
   {%endfor%}
 </table>
 
-
+<a href="/store?store_id={{sid}}"><button>回首頁</button></a>
 
 <script>
   function confirmDelete() {

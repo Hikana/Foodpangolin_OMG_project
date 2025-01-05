@@ -6,9 +6,10 @@
   <title>Document</title>
 </head>
 <body>
-  <form action="/customer" method="get"></form>
   <h1 class="text-center">嗨！今天想點什麼呢？</h1>
-
+  <p>我的訂單</p>
+  <a href="/evaluate"><button>我的評價</button></a>
+  <form action="/customer" method="POST">
   <table border="1">
     <tr>
       <th>時間</th>
@@ -30,12 +31,14 @@
       <td>{{ o.d_name }}</td>
       <td>{{ o.status }}</td>
       <td>{{ o.total }}</td>
-      <td><button>確認收貨</button></td>
+      <td><button type="submit">確認收貨</button></td>
+      <input type="hidden" name="oid" value="{{o.id}}">
     </tr>
     {%endfor%}
   </table>
+  </form>
 
-
+  <p>點餐</p>
   <table border="1">
     <tr>
       <th>店家</th>

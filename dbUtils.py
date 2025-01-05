@@ -52,7 +52,7 @@ def get_store_menu(sid) : # 商店的菜單 ##
 
 def get_customer_self_order(customer_id) : # 顧客自己的訂單 ##
     sql = """
-        select customer_order.time, store.name as s_name, store_menu.name as m_name, customer_order.quantity, delivery.name as d_name, customer_order.quantity*store_menu.price as total, customer_order.status
+        select customer_order.id, customer_order.time, store.name as s_name, store_menu.name as m_name, customer_order.quantity, delivery.name as d_name, customer_order.quantity*store_menu.price as total, customer_order.status
         from `customer_order`
         INNER JOIN 
         `store` ON store.id = customer_order.store_id
@@ -122,7 +122,7 @@ def get_store_id(id) : # 商店 ID ，新增菜單用 ##
     cursor.execute(sql,param)
     return cursor.fetchall()
 
-def get_store_self_order_list(store_id) : # 找到店家的訂單 ##
+def get_store_self_order_list(store_id, status) : # 找到店家的訂單 ##
     sql = """
         SELECT customer_order.id, store_menu.price, store_menu.name as m_name, customer_order.time, customer_order.quantity, customer_order.destination, customer_order.quantity*store_menu.price as total
         FROM `customer_order`
@@ -134,10 +134,10 @@ def get_store_self_order_list(store_id) : # 找到店家的訂單 ##
         order_menu ON order_menu.customer_order_id = customer_order.id
         INNER JOIN
         store_menu ON store_menu.id = order_menu.menu_id
-        WHERE customer_order.store_id = %s AND customer_order.status = 0;
+        WHERE customer_order.store_id = %s AND customer_order.status = %s;
 
         """
-    param = [store_id]
+    param = [store_id,status]
     cursor.execute(sql,param)
     return cursor.fetchall()
 
@@ -156,7 +156,23 @@ def get_order(sid): # 列出店家的訂單 ##
     cursor.execute(sql, param)
     return cursor.fetchall()
 
+def get_store_own_list(sid) : # 店家自己的菜單
+    sql = """
+        SELECT id, name, price, intro FROM `store_menu` WHERE sid = %s
+    """
+    param = [sid]
+    cursor.execute(sql,param)
+    return cursor.fetchall()
 
+def get_menu_intro(id) : # 挑出店家的某個品項內容 (修改用)
+    sql = """
+        SELECT *
+        FROM `store_menu` 
+        WHERE id = %s
+    """
+    param = [id]
+    cursor.execute(sql,param)
+    return cursor.fetchone()
 
 
 # add
@@ -187,6 +203,14 @@ def edit_customer_delivery(delivery_id, status, order_menu_id) : # 接單後把 
         WHERE order_menu.customer_order_id = %s
     """
     param = (delivery_id,status,order_menu_id)
+    cursor.execute(sql, param)
+    conn.commit()
+    return
+
+def edit_customer_order(oid): # 顧客簽收
+    sql = """UPDATE `customer_order` SET `status`= 4 WHERE id = %s"""
+    param = [oid]
+    print("------------------------------",param)
     cursor.execute(sql, param)
     conn.commit()
     return
@@ -319,27 +343,11 @@ def edit_sumry(cid,sid,did,price) :
 
 
 
-# def the_food(id) : # 自己的菜單
-#     sql = """
-#         SELECT *
-#         FROM `store_menu` 
-#         WHERE id = %s
-#     """
-#     param = [id]
-#     cursor.execute(sql,param)
-#     return cursor.fetchone()
 
 
 
-def store_own_list(id) : # 店家自己的菜單
-    sql = """
-        SELECT *
-        FROM `store_menu` 
-        WHERE sid = %s
-    """
-    param = [id]
-    cursor.execute(sql,param)
-    return cursor.fetchall()
+
+
 
 
 
